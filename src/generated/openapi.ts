@@ -643,7 +643,7 @@ export interface paths {
         put?: never;
         /**
          * Create a white-label link for connecting social accounts
-         * @description Send no body for a quick link: it lasts 7 days, offers every platform, shows the client every account in the workspace and connects any number of accounts. A link with `maxAccounts` stops working once that many accounts are connected through it. A link with `expiresAt` stops working at that time instead of after the default, and one with `neverExpires: true` keeps working until it is revoked. For your own connect buttons, send `returnUrl` and use `startUrls`: each one sends the client straight to that network's consent screen, and after the connect, a page or channel pick, or a refusal of the start or the network consent, the client lands on `returnUrl` with `status` (`connected` or `error`), `platform` (a platform type, when known), and on an error `error` (a code) and `message` (text for the client, when there is one) added to its query. A wrong Bluesky or WordPress password keeps the client on the link page to try again. Requires the `accounts.manage` permission.
+         * @description Send no body for a quick link: it lasts 7 days, offers every platform, shows the client every account in the workspace and connects any number of accounts. A link with `maxAccounts` stops working once that many accounts are connected through it. A link with `expiresAt` stops working at that time instead of after the default, and one with `neverExpires: true` keeps working until it is revoked. For your own connect buttons, send `returnUrl` and use `startUrls`: each one sends the client straight to that network's consent screen, and after the connect, a page or channel pick, or a refusal of the start or the network consent, the client lands on `returnUrl` with `status` (`connected` or `error`), `platform` (a platform type, when known), and on an error `error` (a code) and `message` (text for the client, when there is one) added to its query. A connect adds one `accountId` per account it connected, the same `id` that `GET /accounts` lists; a page or channel pick that connects several accounts adds several. A wrong Bluesky or WordPress password keeps the client on the link page to try again. Requires the `accounts.manage` permission.
          */
         post: operations["createConnectLink"];
         delete?: never;
@@ -1438,7 +1438,7 @@ export interface components {
             partialText?: string;
         };
         CaptionResponse: {
-            caption?: string;
+            caption: string;
         };
         GenerateImageRequest: {
             prompt: string;
@@ -1454,20 +1454,20 @@ export interface components {
             referenceImages?: string[];
         };
         GenerateImageResponse: {
-            jobId?: string;
+            jobId: string;
             /** Format: uuid */
-            sessionId?: string;
-            status?: components["schemas"]["ImageJobStatus"];
+            sessionId: string;
+            status: components["schemas"]["ImageJobStatus"];
         };
         ImageJobResponse: {
-            jobId?: string;
+            jobId: string;
             /** Format: uuid */
-            sessionId?: string;
-            status?: components["schemas"]["ImageJobStatus"];
-            imageUrl?: string | null;
+            sessionId: string;
+            status: components["schemas"]["ImageJobStatus"];
+            imageUrl: string | null;
             /** Format: uuid */
-            imageId?: string | null;
-            error?: string | null;
+            imageId: string | null;
+            error: string | null;
         };
         /** @enum {string} */
         PlatformType: "FACEBOOK" | "INSTAGRAM" | "THREADS" | "TIKTOK" | "TWITTER" | "BLUESKY" | "LINKEDIN" | "PINTEREST" | "YOUTUBE" | "MASTODON" | "TELEGRAM" | "GOOGLE_BUSINESS" | "TUMBLR" | "WORDPRESS";
@@ -1491,161 +1491,161 @@ export interface components {
         InboxChannelAccess: "AVAILABLE" | "RECONNECT_REQUIRED" | "UNSUPPORTED";
         InboxPerson: {
             /** @description The platform user id */
-            id?: string | null;
-            name?: string;
-            username?: string | null;
-            avatarUrl?: string | null;
+            id: string | null;
+            name: string;
+            username: string | null;
+            avatarUrl: string | null;
         };
         InboxComment: {
-            id?: string;
+            id: string;
             /** @description The account `id` from GET /social-accounts */
-            accountId?: string;
-            platform?: components["schemas"]["PlatformType"];
-            accountName?: string;
+            accountId: string;
+            platform: components["schemas"]["PlatformType"];
+            accountName: string;
             /** @description The AdaptlyPost post id, null when the post was not published through AdaptlyPost */
-            postId?: string | null;
-            platformPostId?: string;
-            postText?: string;
-            postPermalink?: string | null;
-            platformCommentId?: string;
+            postId: string | null;
+            platformPostId: string;
+            postText: string;
+            postPermalink: string | null;
+            platformCommentId: string;
             /** @description Null for a top-level comment */
-            parentPlatformCommentId?: string | null;
-            isReply?: boolean;
-            author?: components["schemas"]["InboxPerson"];
-            text?: string;
-            permalink?: string | null;
-            likeCount?: number | null;
+            parentPlatformCommentId: string | null;
+            isReply: boolean;
+            author: components["schemas"]["InboxPerson"];
+            text: string;
+            permalink: string | null;
+            likeCount: number | null;
             /** Format: date-time */
-            createdAt?: string;
-            status?: components["schemas"]["InboxStatus"];
-            isHidden?: boolean;
-            isOwn?: boolean;
+            createdAt: string;
+            status: components["schemas"]["InboxStatus"];
+            isHidden: boolean;
+            isOwn: boolean;
             /** @description True when your account has a reply under it, sent from AdaptlyPost or from the platform's own app */
-            replied?: boolean;
+            replied: boolean;
             /** Format: date-time */
-            repliedAt?: string | null;
-            likedByAccount?: boolean;
-            capabilities?: {
-                canReply?: boolean;
-                canHide?: boolean;
-                canDelete?: boolean;
-                canLike?: boolean;
+            repliedAt: string | null;
+            likedByAccount: boolean;
+            capabilities: {
+                canReply: boolean;
+                canHide: boolean;
+                canDelete: boolean;
+                canLike: boolean;
             };
         };
         InboxMention: {
-            id?: string;
+            id: string;
             /** @description The account `id` from GET /social-accounts */
-            accountId?: string;
-            platform?: components["schemas"]["PlatformType"];
-            accountName?: string;
-            platformMentionId?: string;
-            author?: components["schemas"]["InboxPerson"];
-            text?: string;
-            permalink?: string | null;
-            thumbnailUrl?: string | null;
+            accountId: string;
+            platform: components["schemas"]["PlatformType"];
+            accountName: string;
+            platformMentionId: string;
+            author: components["schemas"]["InboxPerson"];
+            text: string;
+            permalink: string | null;
+            thumbnailUrl: string | null;
             /** Format: date-time */
-            createdAt?: string;
-            status?: components["schemas"]["InboxStatus"];
-            replied?: boolean;
+            createdAt: string;
+            status: components["schemas"]["InboxStatus"];
+            replied: boolean;
             /** Format: date-time */
-            repliedAt?: string | null;
-            capabilities?: {
-                canReply?: boolean;
+            repliedAt: string | null;
+            capabilities: {
+                canReply: boolean;
             };
             /** @description Replies sent from AdaptlyPost, oldest first */
-            replies?: {
-                id?: string;
-                text?: string;
-                permalink?: string | null;
+            replies: {
+                id: string;
+                text: string;
+                permalink: string | null;
                 /** Format: date-time */
-                createdAt?: string;
+                createdAt: string;
             }[];
         };
         InboxConversation: {
-            id?: string;
+            id: string;
             /** @description The account `id` from GET /social-accounts */
-            accountId?: string;
-            platform?: components["schemas"]["PlatformType"];
-            accountName?: string;
-            participant?: components["schemas"]["InboxPerson"];
-            lastMessageText?: string | null;
+            accountId: string;
+            platform: components["schemas"]["PlatformType"];
+            accountName: string;
+            participant: components["schemas"]["InboxPerson"];
+            lastMessageText: string | null;
             /** Format: date-time */
-            lastMessageAt?: string;
-            lastMessageIsOwn?: boolean;
-            status?: components["schemas"]["InboxStatus"];
+            lastMessageAt: string;
+            lastMessageIsOwn: boolean;
+            status: components["schemas"]["InboxStatus"];
             /** Format: date-time */
-            repliedAt?: string | null;
+            repliedAt: string | null;
             /**
              * Format: date-time
              * @description When the FACEBOOK and INSTAGRAM 24-hour reply window closes; null on other platforms
              */
-            replyWindowEndsAt?: string | null;
-            maxMessageLength?: number;
-            capabilities?: {
-                canReply?: boolean;
+            replyWindowEndsAt: string | null;
+            maxMessageLength: number;
+            capabilities: {
+                canReply: boolean;
             };
         };
         InboxMessage: {
-            id?: string;
-            isOwn?: boolean;
-            text?: string;
-            hasAttachments?: boolean;
+            id: string;
+            isOwn: boolean;
+            text: string;
+            hasAttachments: boolean;
             /** Format: date-time */
-            createdAt?: string;
+            createdAt: string;
         };
         InboxReview: {
-            id?: string;
+            id: string;
             /** @description The account `id` from GET /social-accounts */
-            accountId?: string;
-            platform?: components["schemas"]["PlatformType"];
-            accountName?: string;
-            platformReviewId?: string;
-            reviewer?: {
-                name?: string;
-                avatarUrl?: string | null;
-                isAnonymous?: boolean;
+            accountId: string;
+            platform: components["schemas"]["PlatformType"];
+            accountName: string;
+            platformReviewId: string;
+            reviewer: {
+                name: string;
+                avatarUrl: string | null;
+                isAnonymous: boolean;
             };
-            rating?: number;
-            text?: string | null;
-            reply?: {
-                text?: string;
+            rating: number;
+            text: string | null;
+            reply: {
+                text: string;
                 /** Format: date-time */
-                updatedAt?: string | null;
+                updatedAt: string | null;
             } | null;
             /** Format: date-time */
-            createdAt?: string;
+            createdAt: string;
             /** Format: date-time */
-            updatedAt?: string;
-            status?: components["schemas"]["InboxStatus"];
+            updatedAt: string;
+            status: components["schemas"]["InboxStatus"];
             /** Format: date-time */
-            repliedAt?: string | null;
+            repliedAt: string | null;
             /** @description In UTF-8 bytes */
-            maxReplyLength?: number;
-            capabilities?: {
-                canReply?: boolean;
+            maxReplyLength: number;
+            capabilities: {
+                canReply: boolean;
             };
         };
         InboxSummary: {
-            unread?: {
-                comments?: number;
-                mentions?: number;
-                conversations?: number;
-                reviews?: number;
+            unread: {
+                comments: number;
+                mentions: number;
+                conversations: number;
+                reviews: number;
             };
-            accounts?: {
+            accounts: {
                 /** @description The account `id` from GET /social-accounts */
-                accountId?: string;
-                platform?: components["schemas"]["PlatformType"];
-                accountName?: string;
-                avatarUrl?: string | null;
-                needsReconnect?: boolean;
+                accountId: string;
+                platform: components["schemas"]["PlatformType"];
+                accountName: string;
+                avatarUrl: string | null;
+                needsReconnect: boolean;
                 /** Format: date-time */
-                lastSyncedAt?: string | null;
-                lastErrorCode?: string | null;
-                comments?: components["schemas"]["InboxChannelAccess"];
-                mentions?: components["schemas"]["InboxChannelAccess"];
-                messages?: components["schemas"]["InboxChannelAccess"];
-                reviews?: components["schemas"]["InboxChannelAccess"];
+                lastSyncedAt: string | null;
+                lastErrorCode: string | null;
+                comments: components["schemas"]["InboxChannelAccess"];
+                mentions: components["schemas"]["InboxChannelAccess"];
+                messages: components["schemas"]["InboxChannelAccess"];
+                reviews: components["schemas"]["InboxChannelAccess"];
             }[];
         };
         InboxReplyRequest: {
@@ -1701,17 +1701,17 @@ export interface components {
             accounts: components["schemas"]["PostAccountCheck"][];
             notChecked: {
                 /** @enum {string} */
-                code?: "PLATFORM_PROCESSING" | "DUPLICATE_CONTENT" | "PLATFORM_RATE_LIMITS" | "LIVE_ACCOUNT_ACCESS" | "VIDEO_DURATION";
-                message?: string;
+                code: "PLATFORM_PROCESSING" | "DUPLICATE_CONTENT" | "PLATFORM_RATE_LIMITS" | "LIVE_ACCOUNT_ACCESS" | "VIDEO_DURATION";
+                message: string;
             }[];
         };
         BulkPostValidationReport: {
-            valid?: boolean;
-            totalValid?: number;
-            totalInvalid?: number;
-            results?: {
-                index?: number;
-                report?: components["schemas"]["PostValidationReport"];
+            valid: boolean;
+            totalValid: number;
+            totalInvalid: number;
+            results: {
+                index: number;
+                report: components["schemas"]["PostValidationReport"];
             }[];
         };
         /** @enum {string} */
@@ -1763,8 +1763,8 @@ export interface components {
         Me: {
             /** @enum {string} */
             tokenType: "api_token" | "oauth";
-            tokenId?: string | null;
-            tokenName?: string | null;
+            tokenId: string | null;
+            tokenName: string | null;
             workspace: {
                 id: string;
             };
@@ -1774,7 +1774,7 @@ export interface components {
                 name: string;
             };
             /** @description The workspace role of the member who created the key. The key's own permissions never exceed it */
-            issuerRole?: string | null;
+            issuerRole: string | null;
             permissions: components["schemas"]["WorkspacePermission"][];
             can: {
                 draft: boolean;
@@ -1787,7 +1787,7 @@ export interface components {
              * Format: date-time
              * @description When the key stops working. Null means it never expires
              */
-            expiresAt?: string | null;
+            expiresAt: string | null;
         };
         PlatformText: {
             platform: components["schemas"]["PlatformType"];
@@ -1851,8 +1851,8 @@ export interface components {
         };
         PinterestBoard: {
             /** @description Pass as `pinterestConfigs[].boardId`, or pass `name` as `pinterestConfigs[].boardName` */
-            id?: string;
-            name?: string;
+            id: string;
+            name: string;
             description?: string;
             /** @description `PUBLIC`, `PROTECTED` or `SECRET`, as Pinterest reports it */
             privacy?: string;
@@ -1941,10 +1941,10 @@ export interface components {
         };
         InstagramAudio: {
             /** @description Pass as `instagramConfigs[].audio.audioId` */
-            audioId?: string;
+            audioId: string;
             /** @enum {string} */
-            audioType?: "music" | "original_sound";
-            title?: string;
+            audioType: "music" | "original_sound";
+            title: string;
             /** @description Music only */
             displayArtist?: string;
             /** @description Original sounds only */
@@ -1979,7 +1979,7 @@ export interface components {
              * @default GRID
              * @enum {string}
              */
-            imageLayout: "GRID" | "CAROUSEL";
+            imageLayout?: "GRID" | "CAROUSEL";
             /** @description One card per image, in the same order as the media, used when `imageLayout` is `CAROUSEL`. Facebook only shows your image, title and description on a card whose link points to a website the Page owns; for any other link the post fails with the error Facebook returns. */
             carouselCards?: components["schemas"]["FacebookCarouselCard"][];
         };
@@ -2093,7 +2093,7 @@ export interface components {
              * @default PUBLISH
              * @enum {string}
              */
-            status: "PUBLISH" | "DRAFT" | "PENDING";
+            status?: "PUBLISH" | "DRAFT" | "PENDING";
         };
         CreateSocialPostRequest: {
             /** @description Platforms to post to. Each one also needs its connection ids. Optional when `accountIds` is given */
@@ -2175,7 +2175,7 @@ export interface components {
              * @description Repeat every N days, weeks, months or years
              * @default 1
              */
-            interval: number;
+            interval?: number;
             /** @description WEEKLY only. The weekday of `scheduledAt` is always included */
             weekdays?: ("MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY")[];
             /**
@@ -2187,20 +2187,20 @@ export interface components {
             maxOccurrences?: number;
         };
         RecurringPost: {
-            id?: string;
-            userId?: string;
+            id: string;
+            userId: string;
             /** @enum {string} */
-            status?: "ACTIVE" | "PAUSED" | "ENDED";
+            status: "ACTIVE" | "PAUSED" | "ENDED";
             /** @enum {string} */
             pauseReason?: "USER" | "CONSECUTIVE_FAILURES" | "SUBSCRIPTION_INACTIVE" | "ACCESS_LOST" | "CONNECTION_REMOVED" | "INVALID_CONTENT";
             lastError?: string;
             /** @enum {string} */
-            frequency?: "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
-            interval?: number;
-            weekdays?: ("MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY")[];
+            frequency: "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
+            interval: number;
+            weekdays: ("MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY")[];
             /** Format: date-time */
-            startsAt?: string;
-            timezone?: string;
+            startsAt: string;
+            timezone: string;
             /** Format: date-time */
             endsOn?: string;
             maxOccurrences?: number;
@@ -2210,20 +2210,20 @@ export interface components {
              */
             nextOccurrenceAt?: string;
             /** @description Posts created by the series so far */
-            occurrenceCount?: number;
-            contentType?: components["schemas"]["ContentType"];
+            occurrenceCount: number;
+            contentType: components["schemas"]["ContentType"];
             text?: string;
-            mediaUrls?: string[];
+            mediaUrls: string[];
             mediaAltTexts?: string[];
             thumbnailUrl?: string;
             /** @description Video frame timestamp (ms) used as the thumbnail */
             thumbnailTimestampMs?: number;
-            platformTypes?: components["schemas"]["PlatformType"][];
-            platforms?: components["schemas"]["PostPlatform"][];
+            platformTypes: components["schemas"]["PlatformType"][];
+            platforms: components["schemas"]["PostPlatform"][];
             /** Format: date-time */
-            createdAt?: string;
+            createdAt: string;
             /** Format: date-time */
-            updatedAt?: string;
+            updatedAt: string;
         };
         RssFeedTarget: {
             /** @enum {string} */
@@ -2257,19 +2257,19 @@ export interface components {
              *
              *     {link}
              */
-            template: string;
+            template?: string;
             /** @description Extra instructions for AI captions */
             aiInstructions?: string;
             /**
              * @description Attach the item's image, or the article's preview image
              * @default true
              */
-            includeImage: boolean;
+            includeImage?: boolean;
             /**
              * @description Keep links in X posts clickable. Lifetime-deal plans only; each X post with a link then costs more credits. Without it, links on X go out as plain text
              * @default false
              */
-            twitterKeepLinks: boolean;
+            twitterKeepLinks?: boolean;
             /** @description Post only items whose title or summary contains one of these */
             includeKeywords?: string[];
             /** @description Skip items whose title or summary contains one of these */
@@ -2278,12 +2278,12 @@ export interface components {
              * @description New items are posted oldest first; the rest wait for the next check
              * @default 3
              */
-            maxPostsPerCheck: number;
+            maxPostsPerCheck?: number;
             /**
              * @default 60
              * @enum {integer}
              */
-            checkIntervalMinutes: 15 | 30 | 60 | 180 | 360 | 720 | 1440;
+            checkIntervalMinutes?: 15 | 30 | 60 | 180 | 360 | 720 | 1440;
         };
         CreateRssFeedRequest: components["schemas"]["RssFeedSettings"] & {
             /**
@@ -2295,7 +2295,7 @@ export interface components {
              * @description Also post the newest item on the first check
              * @default false
              */
-            postLatestItem: boolean;
+            postLatestItem?: boolean;
         };
         UpdateRssFeedRequest: components["schemas"]["RssFeedSettings"];
         PreviewRssFeedRequest: {
@@ -2306,18 +2306,18 @@ export interface components {
              *
              *     {link}
              */
-            template: string;
+            template?: string;
         };
         RssFeed: {
-            id?: string;
+            id: string;
             /** @description Member the feed posts as: whoever last saved it */
-            userId?: string;
-            accountGroupId?: string;
-            name?: string;
-            url?: string;
+            userId: string;
+            accountGroupId: string;
+            name: string;
+            url: string;
             siteUrl?: string;
             /** @enum {string} */
-            status?: "ACTIVE" | "PAUSED";
+            status: "ACTIVE" | "PAUSED";
             /**
              * @description Why the feed stopped: USER (paused by hand), FETCH_FAILURES (5 failed fetches in a row), CONSECUTIVE_FAILURES (3 items in a row failed to post), ACCESS_LOST (its owner lost the permission its post mode needs), SUBSCRIPTION_INACTIVE (the plan no longer covers publishing) or CONNECTION_REMOVED (every target account was disconnected)
              * @enum {string}
@@ -2328,37 +2328,37 @@ export interface components {
              * @description DRAFT creates a draft and needs `posts.draft`; SCHEDULE schedules the post `publishDelayMinutes` after the item is found and needs `posts.schedule`; PUBLISH publishes it right away and needs `posts.publish`
              * @enum {string}
              */
-            postMode?: "DRAFT" | "SCHEDULE" | "PUBLISH";
-            publishDelayMinutes?: number;
+            postMode: "DRAFT" | "SCHEDULE" | "PUBLISH";
+            publishDelayMinutes: number;
             /**
              * @description TEMPLATE fills `template`; AI writes one caption per platform from the article, appends the link, spends 1 AI credit per platform per item and needs `ai.generate`
              * @enum {string}
              */
-            contentMode?: "TEMPLATE" | "AI";
-            template?: string;
+            contentMode: "TEMPLATE" | "AI";
+            template: string;
             aiInstructions?: string;
-            includeImage?: boolean;
-            twitterKeepLinks?: boolean;
-            includeKeywords?: string[];
-            excludeKeywords?: string[];
-            maxPostsPerCheck?: number;
-            checkIntervalMinutes?: number;
-            targets?: components["schemas"]["RssFeedTarget"][];
+            includeImage: boolean;
+            twitterKeepLinks: boolean;
+            includeKeywords: string[];
+            excludeKeywords: string[];
+            maxPostsPerCheck: number;
+            checkIntervalMinutes: number;
+            targets: components["schemas"]["RssFeedTarget"][];
             /** Format: date-time */
-            nextCheckAt?: string;
+            nextCheckAt: string;
             /** Format: date-time */
             lastCheckedAt?: string;
             /** Format: date-time */
             lastPostedAt?: string;
             /** Format: date-time */
-            createdAt?: string;
+            createdAt: string;
             /** Format: date-time */
-            updatedAt?: string;
+            updatedAt: string;
         };
         RssFeedItem: {
-            id?: string;
+            id: string;
             /** Format: date-time */
-            createdAt?: string;
+            createdAt: string;
             title?: string;
             link?: string;
             /** Format: date-time */
@@ -2367,23 +2367,23 @@ export interface components {
              * @description BASELINE (already in the feed when it was added), PROCESSING, POSTED, FILTERED (keyword rules), SKIPPED (published more than 14 days before the feed was added) or FAILED
              * @enum {string}
              */
-            status?: "BASELINE" | "PROCESSING" | "POSTED" | "FILTERED" | "SKIPPED" | "FAILED";
+            status: "BASELINE" | "PROCESSING" | "POSTED" | "FILTERED" | "SKIPPED" | "FAILED";
             postId?: string;
             error?: string;
         };
         RssFeedPreview: {
-            url?: string;
+            url: string;
             title?: string;
             siteUrl?: string;
-            items?: {
-                title?: string;
+            items: {
+                title: string;
                 link?: string;
-                summary?: string;
+                summary: string;
                 /** Format: date-time */
                 publishedAt?: string;
                 imageUrl?: string;
                 /** @description The item rendered with `template` */
-                text?: string;
+                text: string;
             }[];
         };
         UpdateSocialPostRequest: {
@@ -2555,26 +2555,26 @@ export interface components {
             }[];
         };
         CreatePostResponse: {
-            postId?: string;
-            queuedPlatforms?: components["schemas"]["PlatformType"][];
-            skippedPlatforms?: {
-                platform?: components["schemas"]["PlatformType"];
-                reason?: string;
+            postId: string;
+            queuedPlatforms: components["schemas"]["PlatformType"][];
+            skippedPlatforms: {
+                platform: components["schemas"]["PlatformType"];
+                reason: string;
             }[];
-            isScheduled?: boolean;
+            isScheduled: boolean;
             /** Format: date-time */
             scheduledAt?: string;
             /** @description Set when the request carried `recurrence` */
             recurringPostId?: string;
         };
         PostPlatform: {
-            id?: string;
+            id: string;
             /** Format: date-time */
-            createdAt?: string;
+            createdAt: string;
             /** Format: date-time */
-            updatedAt?: string;
-            platform?: components["schemas"]["PlatformType"];
-            status?: components["schemas"]["PlatformPostStatus"];
+            updatedAt: string;
+            platform: components["schemas"]["PlatformType"];
+            status: components["schemas"]["PlatformPostStatus"];
             connectionId?: string;
             /** @description For FACEBOOK, the Facebook page id — the same value as `pageId` on /social-accounts, and identical to `facebookPageExternalId` below. Posts created before that id was recorded return the account `id` from /social-accounts instead */
             pageId?: string;
@@ -2587,12 +2587,12 @@ export interface components {
             /** Format: date-time */
             publishedAt?: string;
             /** @description The media as submitted. After publishing, some platforms replace these with their own CDN links, which expire, and the uploaded source files are removed. Use `previewUrls` for anything you display later */
-            mediaUrls?: string[];
-            mediaAltTexts?: string[];
+            mediaUrls: string[];
+            mediaAltTexts: string[];
             /** @description The media set for this platform through `platformMedia`; empty when the platform uses the post media */
-            mediaOverrideUrls?: string[];
+            mediaOverrideUrls: string[];
             /** @description The alt texts set for this platform through `platformMedia` */
-            mediaOverrideAltTexts?: string[];
+            mediaOverrideAltTexts: string[];
             /**
              * @description The aspect ratio chosen for this platform through `platformAspectRatios`; absent when the images went out as uploaded
              * @enum {string}
@@ -2605,7 +2605,7 @@ export interface components {
             /** @description The video frame (ms) set for this platform through `platformThumbnails` */
             thumbnailTimestampMs?: number;
             /** @description Preview images we host (WebP, up to 720px), a still frame for videos, filled in shortly after publishing starts. They stay available after the source files and the platform links in mediaUrls are gone. Normally one entry per media item, where an empty string means that item could not be rendered; a post recovered after its media expired carries a single cover instead */
-            previewUrls?: string[];
+            previewUrls: string[];
             /** @description The first comment set through `firstComments` */
             firstComment?: string;
             /** @description PENDING until the comment is posted, PUBLISHED once it is, FAILED when it could not be. Absent when the platform has no first comment */
@@ -2624,13 +2624,13 @@ export interface components {
              */
             firstCommentDueAt?: string;
             /** @description The replies set through `threadReplies`, in order. Empty when the platform has no thread */
-            threadReplies?: string[];
+            threadReplies: string[];
             /** @description Parallel to `threadReplies`: the image URLs of each reply, an empty array for a reply without images */
-            threadReplyMediaUrls?: string[][];
+            threadReplyMediaUrls: string[][];
             /** @description PENDING until every reply is posted, PUBLISHED once they are, FAILED when one could not be. Absent when the platform has no thread */
             threadStatus?: components["schemas"]["PostThreadStatus"];
             /** @description The platform's ids of the replies published so far, in order (AT URIs on Bluesky). Fewer ids than replies means the rest did not go out */
-            threadReplyIds?: string[];
+            threadReplyIds: string[];
             /** @description Why the thread stopped */
             threadError?: string;
             /** Format: date-time */
@@ -2709,7 +2709,7 @@ export interface components {
             /** @description The LinkedIn post URN this account reshares, when the post is a reshare */
             linkedinReshareOf?: string;
             /** @description Whether links in this X post stay clickable. Only honored for AppSumo lifetime deals */
-            twitterKeepLinks?: boolean;
+            twitterKeepLinks: boolean;
             /** @description The id of the X post this account quotes, when the post is a quote */
             twitterQuoteOf?: string;
             googleBusinessTopicType?: string;
@@ -2721,36 +2721,38 @@ export interface components {
             googleBusinessOfferCouponCode?: string;
             googleBusinessOfferRedeemUrl?: string;
             googleBusinessOfferTerms?: string;
-            tumblrTags?: string[];
+            tumblrTags: string[];
             tumblrTitle?: string;
             tumblrSourceUrl?: string;
             wordpressTitle?: string;
             wordpressExcerpt?: string;
-            wordpressCategoryIds?: number[];
-            wordpressTags?: string[];
+            wordpressCategoryIds: number[];
+            wordpressTags: string[];
             /** @enum {string} */
-            wordpressStatus?: "PUBLISH" | "DRAFT" | "PENDING";
+            wordpressStatus: "PUBLISH" | "DRAFT" | "PENDING";
         };
         Post: {
-            id?: string;
+            id: string;
             /** Format: date-time */
-            createdAt?: string;
+            createdAt: string;
             /** Format: date-time */
-            updatedAt?: string;
-            userId?: string;
-            contentType?: components["schemas"]["ContentType"];
+            updatedAt: string;
+            userId: string;
+            contentType: components["schemas"]["ContentType"];
             text?: string;
             /** Format: date-time */
             scheduledAt?: string;
-            timezone?: string;
-            status?: components["schemas"]["PostStatus"];
+            timezone: string;
+            status: components["schemas"]["PostStatus"];
             thumbnailUrl?: string;
             /** @description Video frame timestamp (ms) used as the thumbnail */
             thumbnailTimestampMs?: number;
             /** @description The media as submitted, shared by every platform entry. See `mediaUrls` on PostPlatform for how these change after publishing */
-            mediaUrls?: string[];
+            mediaUrls: string[];
             mediaAltTexts?: string[];
-            platforms?: components["schemas"]["PostPlatform"][];
+            /** @description True while the files uploaded for this post are still stored. They are removed after publishing, so use `previewUrls` on each platform for anything you display later */
+            mediaRetained: boolean;
+            platforms: components["schemas"]["PostPlatform"][];
             /** @description The recurring post this post is an occurrence of */
             recurringPostId?: string;
             /**
@@ -2761,12 +2763,12 @@ export interface components {
         };
         SocialAccount: {
             /** @description The connection id to pass in the platform's `*ConnectionIds` array. For FACEBOOK this identifies the connected page and is not the Facebook page id — see `pageId` */
-            id?: string;
-            platform?: components["schemas"]["PlatformType"];
-            displayName?: string;
-            username?: string;
-            avatarUrl?: string;
-            status?: components["schemas"]["SocialAccountStatus"];
+            id: string;
+            platform: components["schemas"]["PlatformType"];
+            displayName: string;
+            username: string;
+            avatarUrl: string;
+            status: components["schemas"]["SocialAccountStatus"];
             /** @description The platform's own rejection message. Present only while `status` is `unauthorized` */
             unauthorizedReason?: string;
             /** @description The Facebook page id. Present for FACEBOOK page accounts — accepted in `pageIds` (as is this account `id`), and returned as `pageId` and `facebookPageExternalId` on post platforms */
@@ -2780,24 +2782,24 @@ export interface components {
          */
         SocialAccountStatus: "active" | "unauthorized";
         SocialAccountCheckResult: {
-            id?: string;
-            platform?: components["schemas"]["PlatformType"];
-            displayName?: string;
-            pageId?: string;
-            status?: components["schemas"]["SocialAccountStatus"];
+            id: string;
+            platform: components["schemas"]["PlatformType"];
+            displayName: string;
+            pageId: string;
+            status: components["schemas"]["SocialAccountStatus"];
             /** @description The platform's own rejection message, when `status` is `unauthorized` */
             unauthorizedReason?: string;
             /** Format: date-time */
-            checkedAt?: string;
+            checkedAt: string;
         };
         SocialAccountRemovalResult: {
-            id?: string;
-            platform?: components["schemas"]["PlatformType"];
-            displayName?: string;
+            id: string;
+            platform: components["schemas"]["PlatformType"];
+            displayName: string;
             /** @description The Facebook page id, for FACEBOOK accounts */
             pageId?: string;
             /** @enum {boolean} */
-            removed?: true;
+            removed: true;
         };
         /** @description The account an `account.unauthorized` delivery is about. `id` matches the account `id` on /social-accounts */
         WebhookAccount: {
@@ -2866,36 +2868,36 @@ export interface components {
             events?: components["schemas"]["WebhookEventName"][];
         };
         Webhook: {
-            id?: string;
-            url?: string;
-            active?: boolean;
+            id: string;
+            url: string;
+            active: boolean;
             /** @description The events chosen at creation or update; empty means the default events */
-            events?: components["schemas"]["WebhookEventName"][];
+            events: components["schemas"]["WebhookEventName"][];
             /** Format: date-time */
-            createdAt?: string;
+            createdAt: string;
             /** Format: date-time */
-            updatedAt?: string;
+            updatedAt: string;
             /** Format: date-time */
-            lastSuccessAt?: string | null;
+            lastSuccessAt: string | null;
             /** Format: date-time */
-            lastFailureAt?: string | null;
+            lastFailureAt: string | null;
             /** Format: date-time */
-            disabledAt?: string | null;
+            disabledAt: string | null;
         };
         CreateWebhookResponse: components["schemas"]["Webhook"] & {
             /** @description HMAC-SHA256 signing secret (whsec_...) for the x-adaptly-signature header. Returned ONLY at creation, store it securely; if lost, delete and re-create the webhook */
-            secret?: string;
+            secret: string;
         };
         /** @description Body of webhook deliveries POSTed to registered endpoints. Verify authenticity by comparing the x-adaptly-signature header to sha256=HMAC_SHA256(secret, "{x-adaptly-timestamp}.{rawBody}") */
         WebhookEventPayload: {
             /** @description Unique delivery ID */
-            id?: string;
+            id: string;
             /** @description The event name. POST /webhooks/{id}/test sends `webhook.test`, which is never delivered otherwise */
-            event?: components["schemas"]["WebhookEventName"] | "webhook.test";
+            event: components["schemas"]["WebhookEventName"] | "webhook.test";
             /** Format: date-time */
-            createdAt?: string;
+            createdAt: string;
             /** @description Carries `post` for post.* events, `account` for account.* events and `image` for image.* events, `comment` (and `parentCommentId` on comment.replied) for comment.* events, `mention` for mention.created, `conversation` and `message` for message.received and `review` for review.created. A `webhook.test` delivery carries `webhookId` and `events` instead */
-            data?: {
+            data: {
                 post?: components["schemas"]["Post"];
                 account?: components["schemas"]["WebhookAccount"];
                 image?: components["schemas"]["WebhookImage"];
@@ -2925,150 +2927,150 @@ export interface components {
         AnalyticsSyncJobStatus: "IDLE" | "QUEUED" | "SYNCING" | "FAILED";
         /** @description A metric for the requested window next to the same metric for the previous window of equal length. `null` when no selected platform reports it, or when posts exist but none of them reported it */
         AnalyticsMetricValue: {
-            value?: number | null;
-            previousValue?: number | null;
+            value: number | null;
+            previousValue: number | null;
             /** @description Percentage change from previousValue to value. Null when previousValue is 0 or unknown */
-            deltaPercent?: number | null;
+            deltaPercent: number | null;
         };
         AnalyticsOverview: {
-            views?: components["schemas"]["AnalyticsMetricValue"];
-            likes?: components["schemas"]["AnalyticsMetricValue"];
-            comments?: components["schemas"]["AnalyticsMetricValue"];
-            shares?: components["schemas"]["AnalyticsMetricValue"];
+            views: components["schemas"]["AnalyticsMetricValue"];
+            likes: components["schemas"]["AnalyticsMetricValue"];
+            comments: components["schemas"]["AnalyticsMetricValue"];
+            shares: components["schemas"]["AnalyticsMetricValue"];
             /** @description Latest follower count as of `to`, compared with the count as of the end of the previous window */
-            followers?: components["schemas"]["AnalyticsMetricValue"];
-            postsCount?: components["schemas"]["AnalyticsMetricValue"];
-            avgViewsPerPost?: components["schemas"]["AnalyticsMetricValue"];
+            followers: components["schemas"]["AnalyticsMetricValue"];
+            postsCount: components["schemas"]["AnalyticsMetricValue"];
+            avgViewsPerPost: components["schemas"]["AnalyticsMetricValue"];
             /** @description Engagements (likes + comments + shares) divided by views, as a percentage */
-            engagementRate?: components["schemas"]["AnalyticsMetricValue"];
+            engagementRate: components["schemas"]["AnalyticsMetricValue"];
             /** @description Metric names that at least one selected platform cannot report; their totals cover only the platforms that can */
-            partialMetrics?: string[];
+            partialMetrics: string[];
             /** @description Account `id`s from /social-accounts counted by their account-wide activity on each day of the window (every post, whenever published) instead of the lifetime totals of posts published in the window. These accounts have no rows in /analytics/posts */
-            accountActivityConnectionIds?: string[];
+            accountActivityConnectionIds: string[];
             /**
              * Format: date-time
              * @description Most recent successful sync across the selected platforms. Null when nothing has synced yet
              */
-            lastSyncedAt?: string | null;
+            lastSyncedAt: string | null;
         };
         AnalyticsTimeseriesPoint: {
             /**
              * Format: date-time
              * @description Start of the bucket (UTC)
              */
-            date?: string;
-            views?: number | null;
-            likes?: number | null;
-            comments?: number | null;
-            shares?: number | null;
+            date: string;
+            views: number | null;
+            likes: number | null;
+            comments: number | null;
+            shares: number | null;
             /** @description Latest known follower count at the end of the bucket */
-            followers?: number | null;
-            postsCount?: number | null;
-            engagementRate?: number | null;
+            followers: number | null;
+            postsCount: number | null;
+            engagementRate: number | null;
         };
         /** @description Latest captured counters for one post. A metric the platform does not report is null */
         AnalyticsPostMetrics: {
-            views?: number | null;
-            likes?: number | null;
-            comments?: number | null;
-            shares?: number | null;
-            saves?: number | null;
-            clicks?: number | null;
-            impressions?: number | null;
-            reach?: number | null;
-            engagementRate?: number | null;
+            views: number | null;
+            likes: number | null;
+            comments: number | null;
+            shares: number | null;
+            saves: number | null;
+            clicks: number | null;
+            impressions: number | null;
+            reach: number | null;
+            engagementRate: number | null;
             /** @description YouTube only. Views that played past the first frame, the way YouTube counted views before it began counting every start. Null on other platforms and until YouTube Analytics reports the video, which lags by a few days */
-            engagedViews?: number | null;
+            engagedViews: number | null;
             /** @description YouTube only. Average length of a playback, in seconds, over the video's lifetime. Null on other platforms and until YouTube Analytics reports the video */
-            averageViewDurationSeconds?: number | null;
+            averageViewDurationSeconds: number | null;
             /** @description YouTube only. Average share of the video watched per playback, as a percentage (0-100, can exceed 100 when viewers rewatch). Null on other platforms and until YouTube Analytics reports the video */
-            averageViewPercentage?: number | null;
+            averageViewPercentage: number | null;
         };
         AnalyticsPost: {
             /** @description Analytics record id. The only id every tracked post has, including posts discovered on the account */
-            id?: string;
+            id: string;
             /** @description The AdaptlyPost post id (usable with /social-posts/{id}). Null for a post discovered on the account rather than published through AdaptlyPost */
-            postId?: string | null;
+            postId: string | null;
             /** @description The `platformId` from /social-posts/{id}/results. Null for discovered posts */
-            postPlatformId?: string | null;
-            platform?: components["schemas"]["PlatformType"];
+            postPlatformId: string | null;
+            platform: components["schemas"]["PlatformType"];
             /** Format: date-time */
-            publishedAt?: string;
-            title?: string | null;
-            thumbnailUrl?: string | null;
+            publishedAt: string;
+            title: string | null;
+            thumbnailUrl: string | null;
             /** @description Public URL of the post on the platform, when known */
-            permalink?: string | null;
+            permalink: string | null;
             /** @description The account `id` from /social-accounts that the post belongs to */
-            connectionId?: string;
-            accountName?: string | null;
-            metrics?: components["schemas"]["AnalyticsPostMetrics"];
+            connectionId: string;
+            accountName: string | null;
+            metrics: components["schemas"]["AnalyticsPostMetrics"];
         };
         DiscoveredPost: {
             /** @description Analytics record id */
-            id?: string;
-            platform?: components["schemas"]["PlatformType"];
+            id: string;
+            platform: components["schemas"]["PlatformType"];
             /** Format: date-time */
-            publishedAt?: string;
-            text?: string | null;
-            thumbnailUrl?: string | null;
-            permalink?: string | null;
+            publishedAt: string;
+            text: string | null;
+            thumbnailUrl: string | null;
+            permalink: string | null;
             /** @description The account `id` from /social-accounts that the post belongs to */
-            connectionId?: string;
-            accountName?: string | null;
+            connectionId: string;
+            accountName: string | null;
         };
         AnalyticsPlatformBreakdownItem: {
-            platform?: components["schemas"]["PlatformType"];
-            followers?: components["schemas"]["AnalyticsMetricValue"];
-            views?: components["schemas"]["AnalyticsMetricValue"];
-            likes?: components["schemas"]["AnalyticsMetricValue"];
-            comments?: components["schemas"]["AnalyticsMetricValue"];
-            shares?: components["schemas"]["AnalyticsMetricValue"];
-            postsCount?: components["schemas"]["AnalyticsMetricValue"];
-            avgViewsPerPost?: components["schemas"]["AnalyticsMetricValue"];
-            engagementRate?: components["schemas"]["AnalyticsMetricValue"];
+            platform: components["schemas"]["PlatformType"];
+            followers: components["schemas"]["AnalyticsMetricValue"];
+            views: components["schemas"]["AnalyticsMetricValue"];
+            likes: components["schemas"]["AnalyticsMetricValue"];
+            comments: components["schemas"]["AnalyticsMetricValue"];
+            shares: components["schemas"]["AnalyticsMetricValue"];
+            postsCount: components["schemas"]["AnalyticsMetricValue"];
+            avgViewsPerPost: components["schemas"]["AnalyticsMetricValue"];
+            engagementRate: components["schemas"]["AnalyticsMetricValue"];
             /** @description Metric names this platform reports */
-            supportedMetrics?: string[];
+            supportedMetrics: string[];
             /** @description Account `id`s from /social-accounts counted by their account-wide activity on each day of the window (every post, whenever published) instead of the lifetime totals of posts published in the window. These accounts have no rows in /analytics/posts */
-            accountActivityConnectionIds?: string[];
+            accountActivityConnectionIds: string[];
         };
         AnalyticsPlatformSyncStatus: {
-            platform?: components["schemas"]["PlatformType"];
+            platform: components["schemas"]["PlatformType"];
             /** @description The account `id` from /social-accounts */
-            connectionId?: string;
-            accountName?: string | null;
-            status?: components["schemas"]["AnalyticsSyncJobStatus"];
+            connectionId: string;
+            accountName: string | null;
+            status: components["schemas"]["AnalyticsSyncJobStatus"];
             /** Format: date-time */
-            lastSyncedAt?: string | null;
-            lastErrorMessage?: string | null;
+            lastSyncedAt: string | null;
+            lastErrorMessage: string | null;
             /**
              * Format: date-time
              * @description Oldest publish date this account has data for. Earlier dates have no data rather than zero activity
              */
-            historyHorizonAt?: string | null;
+            historyHorizonAt: string | null;
             /** Format: date-time */
-            lastDiscoveryAt?: string | null;
+            lastDiscoveryAt: string | null;
             /** @description True when the account was connected before analytics permissions existed. It stays parked until the user reconnects it (a connect link works) and approves the extra permissions */
-            needsAnalyticsReconnect?: boolean;
+            needsAnalyticsReconnect: boolean;
         };
         AnalyticsSyncStatus: {
-            accountGroupId?: string;
+            accountGroupId: string;
             /** @description True while any account is queued or syncing */
-            syncInProgress?: boolean;
+            syncInProgress: boolean;
             /** Format: date-time */
-            lastSyncedAt?: string | null;
+            lastSyncedAt: string | null;
             /**
              * Format: date-time
              * @description Earliest date any connected account has data for
              */
-            historyHorizonAt?: string | null;
-            platforms?: components["schemas"]["AnalyticsPlatformSyncStatus"][];
+            historyHorizonAt: string | null;
+            platforms: components["schemas"]["AnalyticsPlatformSyncStatus"][];
         };
         TriggerAnalyticsSyncResponse: {
             /** @description True when a sync was queued. False inside the 15 minute cooldown, or when no connected account supports analytics */
-            queued?: boolean;
-            message?: string;
+            queued: boolean;
+            message: string;
             /** @description Seconds until the next sync can be requested; null when queued */
-            cooldownSecondsRemaining?: number | null;
+            cooldownSecondsRemaining: number | null;
         };
     };
     responses: never;
@@ -3190,9 +3192,9 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        posts?: components["schemas"]["Post"][];
-                        total?: number;
-                        hasMore?: boolean;
+                        posts: components["schemas"]["Post"][];
+                        total: number;
+                        hasMore: boolean;
                     };
                 };
             };
@@ -3446,12 +3448,12 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        totalScheduled?: number;
-                        totalFailed?: number;
-                        results?: {
+                        totalScheduled: number;
+                        totalFailed: number;
+                        results: {
                             postId?: string;
-                            success?: boolean;
-                            isScheduled?: boolean;
+                            success: boolean;
+                            isScheduled: boolean;
                             /** Format: date-time */
                             scheduledAt?: string;
                             errorMessage?: string;
@@ -3581,7 +3583,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        deleted?: boolean;
+                        deleted: boolean;
                     };
                 };
             };
@@ -3747,13 +3749,13 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        postId?: string;
-                        status?: components["schemas"]["PostStatus"];
-                        results?: {
-                            platformId?: string;
-                            platform?: components["schemas"]["PlatformType"];
+                        postId: string;
+                        status: components["schemas"]["PostStatus"];
+                        results: {
+                            platformId: string;
+                            platform: components["schemas"]["PlatformType"];
                             accountName?: string;
-                            status?: components["schemas"]["PlatformPostStatus"];
+                            status: components["schemas"]["PlatformPostStatus"];
                             platformPostId?: string;
                             errorMessage?: string;
                             /** @description TikTok delivered the content to the inbox as a draft because the daily active-user cap was hit */
@@ -3828,9 +3830,9 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        postId?: string;
-                        queuedPlatforms?: components["schemas"]["PlatformType"][];
-                        isScheduled?: boolean;
+                        postId: string;
+                        queuedPlatforms: components["schemas"]["PlatformType"][];
+                        isScheduled: boolean;
                         /** Format: date-time */
                         scheduledAt?: string;
                     };
@@ -3989,9 +3991,9 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        postId?: string;
-                        queuedPlatforms?: components["schemas"]["PlatformType"][];
-                        isScheduled?: boolean;
+                        postId: string;
+                        queuedPlatforms: components["schemas"]["PlatformType"][];
+                        isScheduled: boolean;
                     };
                 };
             };
@@ -4065,9 +4067,9 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        recurringPosts?: components["schemas"]["RecurringPost"][];
-                        total?: number;
-                        hasMore?: boolean;
+                        recurringPosts: components["schemas"]["RecurringPost"][];
+                        total: number;
+                        hasMore: boolean;
                     };
                 };
             };
@@ -4193,7 +4195,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        deleted?: boolean;
+                        deleted: boolean;
                     };
                 };
             };
@@ -4378,7 +4380,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        rssFeeds?: components["schemas"]["RssFeed"][];
+                        rssFeeds: components["schemas"]["RssFeed"][];
                     };
                 };
             };
@@ -4639,7 +4641,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        deleted?: boolean;
+                        deleted: boolean;
                     };
                 };
             };
@@ -4780,7 +4782,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        items?: components["schemas"]["RssFeedItem"][];
+                        items: components["schemas"]["RssFeedItem"][];
                     };
                 };
             };
@@ -5036,7 +5038,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        accounts?: components["schemas"]["SocialAccount"][];
+                        accounts: components["schemas"]["SocialAccount"][];
                     };
                 };
             };
@@ -5228,7 +5230,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        audio?: components["schemas"]["InstagramAudio"][];
+                        audio: components["schemas"]["InstagramAudio"][];
                     };
                 };
             };
@@ -5301,7 +5303,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        boards?: components["schemas"]["PinterestBoard"][];
+                        boards: components["schemas"]["PinterestBoard"][];
                     };
                 };
             };
@@ -5374,7 +5376,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        categories?: components["schemas"]["WordPressCategory"][];
+                        categories: components["schemas"]["WordPressCategory"][];
                     };
                 };
             };
@@ -5456,7 +5458,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        organization?: components["schemas"]["LinkedInOrganization"];
+                        organization: components["schemas"]["LinkedInOrganization"];
                     };
                 };
             };
@@ -5530,15 +5532,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        urls?: {
-                            fileName?: string;
+                        urls: {
+                            fileName: string;
                             /** @description PUT the file bytes to this URL */
-                            uploadUrl?: string;
+                            uploadUrl: string;
                             /** @description Public URL to reference in mediaUrls after upload. Reusable across posts; the file stays until the last post referencing it has published */
-                            publicUrl?: string;
-                            key?: string;
+                            publicUrl: string;
+                            key: string;
                             /** Format: date-time */
-                            expiresAt?: string;
+                            expiresAt: string;
                         }[];
                     };
                 };
@@ -5604,23 +5606,23 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        url?: string;
-                        token?: string;
+                        url: string;
+                        token: string;
                         /** Format: date-time */
-                        expiresAt?: string | null;
-                        name?: string | null;
+                        expiresAt: string | null;
+                        name: string | null;
                         /** @enum {string} */
-                        visibility?: "PUBLIC" | "PRIVATE";
-                        allowedPlatforms?: ("FACEBOOK" | "INSTAGRAM" | "THREADS" | "TIKTOK" | "TWITTER" | "BLUESKY" | "LINKEDIN" | "PINTEREST" | "YOUTUBE" | "MASTODON" | "TELEGRAM" | "GOOGLE_BUSINESS" | "TUMBLR" | "WORDPRESS")[];
-                        maxAccounts?: number | null;
+                        visibility: "PUBLIC" | "PRIVATE";
+                        allowedPlatforms: ("FACEBOOK" | "INSTAGRAM" | "THREADS" | "TIKTOK" | "TWITTER" | "BLUESKY" | "LINKEDIN" | "PINTEREST" | "YOUTUBE" | "MASTODON" | "TELEGRAM" | "GOOGLE_BUSINESS" | "TUMBLR" | "WORDPRESS")[];
+                        maxAccounts: number | null;
                         /** Format: uri */
-                        returnUrl?: string | null;
+                        returnUrl: string | null;
                         /** @description One URL per platform the link offers that connects through the network's own consent screen. Bluesky and Telegram are left out: they connect on the link page. Add `server` to the Mastodon URL and `site` to the WordPress URL; add `via=facebook` to the Instagram URL to connect an Instagram account through its Facebook Page */
-                        startUrls?: {
+                        startUrls: {
                             /** @enum {string} */
-                            platform?: "FACEBOOK" | "INSTAGRAM" | "THREADS" | "TIKTOK" | "TWITTER" | "BLUESKY" | "LINKEDIN" | "PINTEREST" | "YOUTUBE" | "MASTODON" | "TELEGRAM" | "GOOGLE_BUSINESS" | "TUMBLR" | "WORDPRESS";
+                            platform: "FACEBOOK" | "INSTAGRAM" | "THREADS" | "TIKTOK" | "TWITTER" | "BLUESKY" | "LINKEDIN" | "PINTEREST" | "YOUTUBE" | "MASTODON" | "TELEGRAM" | "GOOGLE_BUSINESS" | "TUMBLR" | "WORDPRESS";
                             /** Format: uri */
-                            url?: string;
+                            url: string;
                         }[];
                     };
                 };
@@ -5684,7 +5686,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        success?: boolean;
+                        success: boolean;
                     };
                 };
             };
@@ -5795,7 +5797,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        queued?: boolean;
+                        queued: boolean;
                     };
                 };
             };
@@ -5936,9 +5938,9 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        comments?: components["schemas"]["InboxComment"][];
+                        comments: components["schemas"]["InboxComment"][];
                         /** @description Unread items of this channel left in the workspace */
-                        unreadCount?: number;
+                        unreadCount: number;
                     };
                 };
             };
@@ -6011,9 +6013,9 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        comment?: components["schemas"]["InboxComment"];
-                        parent?: components["schemas"]["InboxComment"] | null;
-                        replies?: components["schemas"]["InboxComment"][];
+                        comment: components["schemas"]["InboxComment"];
+                        parent: components["schemas"]["InboxComment"] | null;
+                        replies: components["schemas"]["InboxComment"][];
                     };
                 };
             };
@@ -6077,7 +6079,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        deleted?: boolean;
+                        deleted: boolean;
                     };
                 };
             };
@@ -6645,9 +6647,9 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        mentions?: components["schemas"]["InboxMention"][];
+                        mentions: components["schemas"]["InboxMention"][];
                         /** @description Unread items of this channel left in the workspace */
-                        unreadCount?: number;
+                        unreadCount: number;
                     };
                 };
             };
@@ -6886,9 +6888,9 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        conversations?: components["schemas"]["InboxConversation"][];
+                        conversations: components["schemas"]["InboxConversation"][];
                         /** @description Unread items of this channel left in the workspace */
-                        unreadCount?: number;
+                        unreadCount: number;
                     };
                 };
             };
@@ -6961,9 +6963,9 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        conversation?: components["schemas"]["InboxConversation"];
+                        conversation: components["schemas"]["InboxConversation"];
                         /** @description Oldest first */
-                        messages?: components["schemas"]["InboxMessage"][];
+                        messages: components["schemas"]["InboxMessage"][];
                     };
                 };
             };
@@ -7031,8 +7033,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        conversation?: components["schemas"]["InboxConversation"];
-                        message?: components["schemas"]["InboxMessage"];
+                        conversation: components["schemas"]["InboxConversation"];
+                        message: components["schemas"]["InboxMessage"];
                     };
                 };
             };
@@ -7116,9 +7118,9 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        conversation?: components["schemas"]["InboxConversation"];
+                        conversation: components["schemas"]["InboxConversation"];
                         /** @description Oldest first */
-                        messages?: components["schemas"]["InboxMessage"][];
+                        messages: components["schemas"]["InboxMessage"][];
                     };
                 };
             };
@@ -7277,9 +7279,9 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        reviews?: components["schemas"]["InboxReview"][];
+                        reviews: components["schemas"]["InboxReview"][];
                         /** @description Unread items of this channel left in the workspace */
-                        unreadCount?: number;
+                        unreadCount: number;
                     };
                 };
             };
@@ -7504,7 +7506,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        webhooks?: components["schemas"]["Webhook"][];
+                        webhooks: components["schemas"]["Webhook"][];
                     };
                 };
             };
@@ -7693,7 +7695,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        deleted?: boolean;
+                        deleted: boolean;
                     };
                 };
             };
@@ -7841,7 +7843,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        success?: boolean;
+                        success: boolean;
                         statusCode?: number;
                         error?: string;
                     };
@@ -7982,7 +7984,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        points?: components["schemas"]["AnalyticsTimeseriesPoint"][];
+                        points: components["schemas"]["AnalyticsTimeseriesPoint"][];
                     };
                 };
             };
@@ -8050,7 +8052,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        platforms?: components["schemas"]["AnalyticsPlatformBreakdownItem"][];
+                        platforms: components["schemas"]["AnalyticsPlatformBreakdownItem"][];
                     };
                 };
             };
@@ -8123,11 +8125,11 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        posts?: components["schemas"]["AnalyticsPost"][];
-                        total?: number;
-                        page?: number;
-                        limit?: number;
-                        hasMore?: boolean;
+                        posts: components["schemas"]["AnalyticsPost"][];
+                        total: number;
+                        page: number;
+                        limit: number;
+                        hasMore: boolean;
                     };
                 };
             };
@@ -8199,7 +8201,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        posts?: components["schemas"]["AnalyticsPost"][];
+                        posts: components["schemas"]["AnalyticsPost"][];
                     };
                 };
             };
@@ -8270,7 +8272,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        posts?: components["schemas"]["DiscoveredPost"][];
+                        posts: components["schemas"]["DiscoveredPost"][];
                     };
                 };
             };

@@ -1,6 +1,6 @@
 {
   "name": "@adaptlypost/sdk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "TypeScript client for the AdaptlyPost API",
   "keywords": [
     "adaptlypost",
@@ -50,7 +50,7 @@
   },
   "sideEffects": false,
   "scripts": {
-    "generate": "openapi-typescript https://post.adaptlypost.com/post/api/v1/openapi.json -o src/generated/openapi.ts",
+    "generate": "openapi-typescript https://post.adaptlypost.com/post/api/v1/openapi.json -o src/generated/openapi.ts --default-non-nullable false",
     "build": "tsdown",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src test",
