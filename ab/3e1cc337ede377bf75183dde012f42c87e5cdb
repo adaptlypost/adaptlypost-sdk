@@ -1,0 +1,93 @@
+README.md
+  s_298ae88299614d::t_eea94bfea7ddea 1-180
+  s_298ae88299614d::t_233477ea091370 181-185
+src/http.ts
+  s_298ae88299614d::t_f7ebdd3a7fc6c8 1-216
+  s_298ae88299614d::t_541626208c4378 217-221
+.github/workflows/ci.yml
+  s_298ae88299614d::t_c7418c6bfbbde3 1-43
+.github/workflows/release.yml
+  s_298ae88299614d::t_f8a0a67b6b2ee2 1-46
+.gitignore
+  s_298ae88299614d::t_d96f9dcc1ee25f 1-4
+LICENSE
+  s_298ae88299614d::t_c8cc5c9b7062c7 1-21
+eslint.config.mjs
+  s_298ae88299614d::t_9034c1a0cf41a6 1-17
+package-lock.json
+  s_298ae88299614d::t_b3f33c9ffaea07 1-4137
+package.json
+  s_298ae88299614d::t_a962ac2d2b1664 1-70
+src/client.ts
+  s_298ae88299614d::t_acb380b3e0dab3 1-52
+src/connect-return.ts
+  s_298ae88299614d::t_b225363d3fa538 1-45
+src/errors.ts
+  s_298ae88299614d::t_8c8596a6cbfdf2 1-135
+src/generated/openapi.ts
+  s_298ae88299614d::t_caf73e9bb17913 1-8684
+src/index.ts
+  s_298ae88299614d::t_5b96d8bd1f8c56 1-39
+src/pagination.ts
+  s_298ae88299614d::t_f462070b0e62c5 1-47
+src/resources/accounts.ts
+  s_298ae88299614d::t_7fc9fed0031bde 1-42
+src/resources/ai.ts
+  s_298ae88299614d::t_037f85e845eb20 1-49
+src/resources/analytics.ts
+  s_298ae88299614d::t_2e347e0993093a 1-57
+src/resources/connect-links.ts
+  s_298ae88299614d::t_a2efaf4ac3c653 1-15
+src/resources/inbox.ts
+  s_298ae88299614d::t_4c5bfe3c89fb8f 1-184
+src/resources/media.ts
+  s_298ae88299614d::t_1cf9a7e94dc792 1-41
+src/resources/path.ts
+  s_298ae88299614d::t_bf71ab59271589 1
+src/resources/posts.ts
+  s_298ae88299614d::t_96982ffbc5adcf 1-76
+src/resources/recurring-posts.ts
+  s_298ae88299614d::t_bdebf3c6749ca0 1-38
+src/resources/rss-feeds.ts
+  s_298ae88299614d::t_c6588f99673417 1-51
+src/resources/webhooks.ts
+  s_298ae88299614d::t_b6be8fc13832cd 1-31
+src/resources/workspaces.ts
+  s_298ae88299614d::t_75562c9ad6448b 1-10
+src/types.ts
+  s_298ae88299614d::t_07a63fd6e13d40 1-48
+src/webhook-signature.ts
+  s_298ae88299614d::t_40c67eaaa82140 1-55
+test/fake-fetch.ts
+  s_298ae88299614d::t_1121968e68f30d 1-31
+test/helpers.test.ts
+  s_298ae88299614d::t_ef444e594bbe43 1-69
+test/http.test.ts
+  s_298ae88299614d::t_81227d57f7e665 1-139
+test/readme-examples.typecheck.ts
+  s_298ae88299614d::t_93f48d82bf501a 1-32
+test/resources.test.ts
+  s_298ae88299614d::t_49f78d9e92af00 1-105
+tsconfig.json
+  s_298ae88299614d::t_6c375d441b0888 1-20
+tsdown.config.ts
+  s_298ae88299614d::t_b1fb6a734c20ea 1-12
+vitest.config.ts
+  s_298ae88299614d::t_59b18b2e901336 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ab3e1cc337ede377bf75183dde012f42c87e5cdb",
+  "prompts": {},
+  "sessions": {
+    "s_298ae88299614d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4044cf45-ca23-4818-9196-ddd678b04cbf",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Taras Shynkarenko <taras.shinkarenko@gmail.com>"
+    }
+  }
+}
