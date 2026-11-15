@@ -5,7 +5,8 @@ export const readmeExamples = async (adaptly: AdaptlyPost, body: CreatePostReque
   const { accounts = [] } = await adaptly.accounts.list();
   const accountIds = accounts.flatMap((account) => (account.id ? [account.id] : []));
   const created = await adaptly.posts.create({
-    content: 'Hello from the SDK',
+    text: 'Hello from the SDK',
+    contentType: 'TEXT',
     accountIds,
     scheduledAt: '2026-12-01T09:00:00Z',
     timezone: 'Europe/Warsaw',
@@ -13,7 +14,13 @@ export const readmeExamples = async (adaptly: AdaptlyPost, body: CreatePostReque
   await adaptly.posts.publish(created.postId ?? '', { timezone: 'UTC', publishNow: true });
   await adaptly.posts.retry(created.postId ?? '');
   const [photo] = await adaptly.media.upload({ fileName: 'launch.jpg', mimeType: 'image/jpeg', data: bytes });
-  await adaptly.posts.create({ content: 'We launched', accountIds, mediaUrls: [photo?.publicUrl ?? ''] });
+  await adaptly.posts.create({
+    text: 'We launched',
+    contentType: 'IMAGE',
+    timezone: 'UTC',
+    accountIds,
+    mediaUrls: [photo?.publicUrl ?? ''],
+  });
   const link = await adaptly.connectLinks.create({ allowedPlatforms: ['INSTAGRAM'], returnUrl: 'https://app.example.com' });
   const start: string | undefined = link.startUrls?.[0]?.url;
   const result = parseConnectReturn('https://app.example.com?status=connected');

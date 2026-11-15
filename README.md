@@ -19,7 +19,8 @@ const { accounts } = await adaptly.accounts.list();
 console.log(accounts);
 
 const { postId } = await adaptly.posts.create({
-  content: 'Hello from the SDK',
+  text: 'Hello from the SDK',
+  contentType: 'TEXT',
   accountIds: ['<account id from the list>'],
   scheduledAt: '2026-12-01T09:00:00Z',
   timezone: 'Europe/Warsaw',
@@ -73,7 +74,13 @@ const [photo] = await adaptly.media.upload({
   data: await readFile('launch.jpg'),
 });
 
-await adaptly.posts.create({ content: 'We launched', accountIds, mediaUrls: [photo.publicUrl] });
+await adaptly.posts.create({
+  text: 'We launched',
+  contentType: 'IMAGE',
+  timezone: 'UTC',
+  accountIds,
+  mediaUrls: [photo.publicUrl],
+});
 ```
 
 `upload` asks for presigned URLs and sends the bytes straight to storage. It takes a `Blob`, an `ArrayBuffer` or a `Uint8Array` (a Node `Buffer` works), or an array of files.

@@ -2166,7 +2166,7 @@ export interface components {
             linkedinConfigs?: components["schemas"]["LinkedInPostConfig"][];
             /** @description X per-account options. `connectionId` must match an entry in `twitterConnectionIds` */
             twitterConfigs?: components["schemas"]["TwitterPostConfig"][];
-        } | unknown | unknown;
+        };
         /** @description Repeats the post. Requires a future `scheduledAt`, which becomes the first post and sets the time of day. Cannot be combined with `saveAsDraft` or TIKTOK */
         Recurrence: {
             /** @enum {string} */

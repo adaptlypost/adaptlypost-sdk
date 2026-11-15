@@ -78,7 +78,7 @@ describe('retries', () => {
   it('never retries a 503 on a create, which may have gone through', async () => {
     const { fetch, calls } = fakeFetch(() => json(503, { message: 'Unavailable' }));
 
-    await expect(client(fetch).posts.create({ content: 'Hi', accountIds: ['acc_1'] })).rejects.toBeInstanceOf(
+    await expect(client(fetch).posts.create({ text: 'Hi', contentType: 'TEXT', timezone: 'UTC', accountIds: ['acc_1'] })).rejects.toBeInstanceOf(
       InternalServerError,
     );
     expect(calls).toHaveLength(1);
@@ -109,7 +109,7 @@ describe('errors', () => {
     );
 
     const failure = await client(fetch)
-      .posts.create({ content: 'x'.repeat(400), accountIds: ['acc_1'] })
+      .posts.create({ text: 'x'.repeat(400), contentType: 'TEXT', timezone: 'UTC', accountIds: ['acc_1'] })
       .catch((error: unknown) => error);
 
     expect(failure).toBeInstanceOf(PostValidationError);
