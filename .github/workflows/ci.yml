@@ -1,0 +1,43 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run typecheck
+
+      - run: npm run lint
+
+      - run: npm test
+
+      - run: npm run build
+
+      - name: package smoke test
+        run: |
+          node --input-type=module -e "import { AdaptlyPost } from './dist/index.js'; new AdaptlyPost({ apiKey: 'adaptly_ci' });"
+          node -e "const { AdaptlyPost } = require('./dist/index.cjs'); new AdaptlyPost({ apiKey: 'adaptly_ci' });"

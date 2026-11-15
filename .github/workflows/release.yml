@@ -1,0 +1,46 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - run: npm install -g npm@latest
+
+      - run: npm ci
+
+      - run: npm run typecheck
+
+      - run: npm test
+
+      - run: npm run build
+
+      - name: publish
+        shell: bash
+        run: |
+          set +e
+          out="$(npm publish 2>&1)"
+          code=$?
+          set -e
+          printf '%s\n' "$out"
+          [ $code -eq 0 ] && exit 0
+          case "$(printf '%s' "$out" | tr 'A-Z' 'a-z')" in
+            *"cannot publish over"*) echo "this version is already on the registry" ;;
+            *) exit $code ;;
+          esac
