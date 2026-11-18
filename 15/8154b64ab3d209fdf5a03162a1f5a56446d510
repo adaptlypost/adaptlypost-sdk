@@ -1,0 +1,35 @@
+README.md
+  s_35fc76a6ffa3cd::t_3e36f9c69c747c 3,114-141
+src/client.ts
+  s_35fc76a6ffa3cd::t_e870a93c6042e6 7,9,29-30,47-48
+src/generated/openapi.ts
+  s_35fc76a6ffa3cd::t_cd432db1ad8cad 40-119,121-148,155-174,3283-3907
+src/resources/invitations.ts
+  s_35fc76a6ffa3cd::t_bb22e9bc32fee4 1-30
+src/resources/members.ts
+  s_35fc76a6ffa3cd::t_77b385594cbdde 1-19
+src/resources/workspaces.ts
+  s_35fc76a6ffa3cd::t_34940d3d7fae7c 2-3,11-18
+src/types.ts
+  s_35fc76a6ffa3cd::t_5a536f622849ff 48-53
+test/readme-examples.typecheck.ts
+  s_35fc76a6ffa3cd::t_f0faa0e48074fa 36-41,44
+test/resources.test.ts
+  s_35fc76a6ffa3cd::t_552d3f6986cbe0 106-245
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "158154b64ab3d209fdf5a03162a1f5a56446d510",
+  "prompts": {},
+  "sessions": {
+    "s_35fc76a6ffa3cd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b1ddb3cb-0d26-434e-a3f6-94b5e8e8a8bd",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Taras Shynkarenko <taras.shinkarenko@gmail.com>"
+    }
+  }
+}
