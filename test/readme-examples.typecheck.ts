@@ -33,7 +33,13 @@ export const readmeExamples = async (adaptly: AdaptlyPost, body: CreatePostReque
   } catch (error) {
     if (error instanceof PostValidationError) for (const issue of error.issues) console.log(issue.platform, issue.code);
   }
+  const workspace = await adaptly.workspaces.create({ name: 'Client B', connectionLimit: 10 });
+  const invitation = await adaptly.invitations.send({
+    email: 'ana@example.com',
+    workspaces: [{ workspaceId: workspace.id, role: 'editor' }],
+  });
+  const { members } = await adaptly.withWorkspace(workspace.id).members.list();
   const webhook: Schemas['Webhook'] | undefined = undefined;
   const createdType: ResponseBody<'createPost'> = created;
-  return { start, ids, caption, image, webhook, createdType };
+  return { start, ids, caption, image, webhook, createdType, invitation, members };
 };

@@ -37,8 +37,136 @@ export interface paths {
          */
         get: operations["listWorkspaces"];
         put?: never;
+        /**
+         * Create a workspace in the organization
+         * @description Creates a workspace in the caller's organization. Every organization owner and admin becomes its admin. The key's creator must also be an organization owner or admin (`org-owner` or `org-admin`) when the call is made; otherwise it answers 403. A plan without room for another workspace answers 403 with `code: subscription_required`. Requires the `workspace.manage` permission.
+         */
+        post: operations["createWorkspace"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workspaces/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete a workspace
+         * @description Deletes a workspace of the caller's organization with everything it holds: posts, feeds, inbox items, API keys and connect links. The default workspace, the last one and one that still has connected social accounts cannot be deleted. The key's creator must also be an organization owner or admin (`org-owner` or `org-admin`) when the call is made; otherwise it answers 403. Requires the `workspace.manage` permission.
+         */
+        delete: operations["deleteWorkspace"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the members of the workspace
+         * @description Lists the members of the workspace the call acts in, with their workspace role and organization roles. Requires the `members.read` permission.
+         */
+        get: operations["listMembers"];
+        put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/members/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove a member from the workspace
+         * @description Removes a member from the workspace the call acts in and revokes their API keys and connect links there. They stay in the organization; a member's last workspace cannot be removed, remove them from the organization instead. Requires the `members.manage` permission.
+         */
+        delete: operations["removeMember"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organization/members/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove a member from the organization
+         * @description Removes a member from the organization and every workspace in it, and revokes their API keys and connect links. The owner cannot be removed, and only the owner can remove an admin. The key's creator must also be an organization owner or admin (`org-owner` or `org-admin`) when the call is made; otherwise it answers 403. Requires the `members.manage` permission.
+         */
+        delete: operations["removeOrganizationMember"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the invitations to the workspace
+         * @description Lists invitations that include the workspace the call acts in, newest first. Requires the `members.manage` permission.
+         */
+        get: operations["listInvitations"];
+        put?: never;
+        /**
+         * Invite someone to the organization
+         * @description Emails an invitation that lasts 7 days. On accepting, the person joins the organization with `organizationRole` and each listed workspace with its role. A creator who is not an organization admin may only invite `org-member`, to workspaces where they manage members, with a role no higher than their own; only the owner may invite an `org-admin`, and only an organization admin may set `creditAllowance`. A plan with no team seat left answers 403 with `code: subscription_required`. Requires the `members.manage` permission.
+         */
+        post: operations["sendInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/invitations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Revoke a pending invitation
+         * @description Revokes a pending invitation that includes the workspace the call acts in. Only the owner may revoke an invitation for an organization admin. Requires the `members.manage` permission.
+         */
+        delete: operations["revokeInvitation"];
         options?: never;
         head?: never;
         patch?: never;
@@ -3145,6 +3273,631 @@ export interface operations {
             };
             /** @description Invalid or missing API key */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Rate limit exceeded */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    createWorkspace: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act in, for OAuth sign-ins that reach several workspaces. Take the id from `GET /workspaces`. Without it the call lands in the default workspace. A workspace the caller cannot reach answers 403 with `code: workspace_access_denied`. An API key belongs to one workspace: send its own id or leave the header out */
+                "X-Workspace-Id"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Unique within the organization; no < or > */
+                    name: string;
+                    description?: string;
+                    /** @description Most social accounts the workspace may connect; leave out for no limit */
+                    connectionLimit?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description The new workspace */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        name: string;
+                        description: string | null;
+                        organizationId: string;
+                        isDefault: boolean;
+                        /** @description Most social accounts the workspace may connect; null for no limit */
+                        connectionLimit: number | null;
+                        /** Format: date-time */
+                        createdAt: string;
+                    };
+                };
+            };
+            /** @description Invalid body or a workspace with this name exists */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Invalid or missing API key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key's role does not hold `workspace.manage` */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PermissionDeniedError"];
+                };
+            };
+            /** @description Rate limit exceeded */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    deleteWorkspace: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act in, for OAuth sign-ins that reach several workspaces. Take the id from `GET /workspaces`. Without it the call lands in the default workspace. A workspace the caller cannot reach answers 403 with `code: workspace_access_denied`. An API key belongs to one workspace: send its own id or leave the header out */
+                "X-Workspace-Id"?: string;
+            };
+            path: {
+                /** @description The workspace id from `GET /workspaces` */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+            /** @description The default or last workspace, or one with connected accounts */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Invalid or missing API key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key's role does not hold `workspace.manage` */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PermissionDeniedError"];
+                };
+            };
+            /** @description No such workspace in this organization */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Rate limit exceeded */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listMembers: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act in, for OAuth sign-ins that reach several workspaces. Take the id from `GET /workspaces`. Without it the call lands in the default workspace. A workspace the caller cannot reach answers 403 with `code: workspace_access_denied`. An API key belongs to one workspace: send its own id or leave the header out */
+                "X-Workspace-Id"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Members */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        members: {
+                            userId: string;
+                            email: string;
+                            firstName: string | null;
+                            lastName: string | null;
+                            /** @enum {string} */
+                            role: "admin" | "editor" | "contributor" | "viewer";
+                            organizationRoles: string[];
+                            /** Format: date-time */
+                            joinedAt: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Invalid or missing API key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key's role does not hold `members.read` */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PermissionDeniedError"];
+                };
+            };
+            /** @description Rate limit exceeded */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    removeMember: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act in, for OAuth sign-ins that reach several workspaces. Take the id from `GET /workspaces`. Without it the call lands in the default workspace. A workspace the caller cannot reach answers 403 with `code: workspace_access_denied`. An API key belongs to one workspace: send its own id or leave the header out */
+                "X-Workspace-Id"?: string;
+            };
+            path: {
+                /** @description The member user id */
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+            /** @description Removing yourself, or the member's last workspace */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Invalid or missing API key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key's role does not hold `members.manage` */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PermissionDeniedError"];
+                };
+            };
+            /** @description Not a member of this workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Rate limit exceeded */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    removeOrganizationMember: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act in, for OAuth sign-ins that reach several workspaces. Take the id from `GET /workspaces`. Without it the call lands in the default workspace. A workspace the caller cannot reach answers 403 with `code: workspace_access_denied`. An API key belongs to one workspace: send its own id or leave the header out */
+                "X-Workspace-Id"?: string;
+            };
+            path: {
+                /** @description The member user id */
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+            /** @description Removing yourself */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Invalid or missing API key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key's role does not hold `members.manage` */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PermissionDeniedError"];
+                };
+            };
+            /** @description Not a member of this organization */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Rate limit exceeded */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listInvitations: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: {
+                /** @description The workspace to act in, for OAuth sign-ins that reach several workspaces. Take the id from `GET /workspaces`. Without it the call lands in the default workspace. A workspace the caller cannot reach answers 403 with `code: workspace_access_denied`. An API key belongs to one workspace: send its own id or leave the header out */
+                "X-Workspace-Id"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Invitations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        invitations: {
+                            id: string;
+                            email: string;
+                            organizationId: string;
+                            /** @enum {string} */
+                            organizationRole: "org-owner" | "org-admin" | "org-member";
+                            /** @description pending, accepted, expired or revoked */
+                            status: string;
+                            workspaces: {
+                                workspaceId: string;
+                                workspaceName: string | null;
+                                /** @enum {string} */
+                                role: "admin" | "editor" | "contributor" | "viewer";
+                            }[];
+                            /** Format: date-time */
+                            expiresAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                        total: number;
+                        hasMore: boolean;
+                    };
+                };
+            };
+            /** @description Invalid or missing API key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key's role does not hold `members.manage` */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PermissionDeniedError"];
+                };
+            };
+            /** @description Rate limit exceeded */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    sendInvitation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act in, for OAuth sign-ins that reach several workspaces. Take the id from `GET /workspaces`. Without it the call lands in the default workspace. A workspace the caller cannot reach answers 403 with `code: workspace_access_denied`. An API key belongs to one workspace: send its own id or leave the header out */
+                "X-Workspace-Id"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: email */
+                    email: string;
+                    /**
+                     * @default org-member
+                     * @enum {string}
+                     */
+                    organizationRole?: "org-admin" | "org-member";
+                    workspaces: {
+                        workspaceId: string;
+                        /** @enum {string} */
+                        role: "admin" | "editor" | "contributor" | "viewer";
+                    }[];
+                    /** @description `MONTHLY` resets to `monthlyAmount` every plan cycle; `FIXED` starts at `balance` and only moves when spent or changed */
+                    creditAllowance?: {
+                        /** @enum {string} */
+                        mode: "MONTHLY" | "FIXED";
+                        monthlyAmount?: number;
+                        balance?: number;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description The invitation */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        email: string;
+                        organizationId: string;
+                        /** @enum {string} */
+                        organizationRole: "org-owner" | "org-admin" | "org-member";
+                        /** @description pending, accepted, expired or revoked */
+                        status: string;
+                        workspaces: {
+                            workspaceId: string;
+                            workspaceName: string | null;
+                            /** @enum {string} */
+                            role: "admin" | "editor" | "contributor" | "viewer";
+                        }[];
+                        /** Format: date-time */
+                        expiresAt: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                    };
+                };
+            };
+            /** @description Invalid body, already invited, already a member, or an unknown workspace */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Invalid or missing API key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key's role does not hold `members.manage` */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PermissionDeniedError"];
+                };
+            };
+            /** @description Rate limit exceeded */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    revokeInvitation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act in, for OAuth sign-ins that reach several workspaces. Take the id from `GET /workspaces`. Without it the call lands in the default workspace. A workspace the caller cannot reach answers 403 with `code: workspace_access_denied`. An API key belongs to one workspace: send its own id or leave the header out */
+                "X-Workspace-Id"?: string;
+            };
+            path: {
+                /** @description The invitation id */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The revoked invitation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        email: string;
+                        organizationId: string;
+                        /** @enum {string} */
+                        organizationRole: "org-owner" | "org-admin" | "org-member";
+                        /** @description pending, accepted, expired or revoked */
+                        status: string;
+                        workspaces: {
+                            workspaceId: string;
+                            workspaceName: string | null;
+                            /** @enum {string} */
+                            role: "admin" | "editor" | "contributor" | "viewer";
+                        }[];
+                        /** Format: date-time */
+                        expiresAt: string;
+                        /** Format: date-time */
+                        createdAt: string;
+                    };
+                };
+            };
+            /** @description The invitation is no longer pending */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Invalid or missing API key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key's role does not hold `members.manage` */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PermissionDeniedError"];
+                };
+            };
+            /** @description No such invitation for this workspace */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

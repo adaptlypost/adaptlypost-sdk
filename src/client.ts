@@ -4,7 +4,9 @@ import { Ai } from './resources/ai.js';
 import { Analytics } from './resources/analytics.js';
 import { ConnectLinks } from './resources/connect-links.js';
 import { Inbox } from './resources/inbox.js';
+import { Invitations } from './resources/invitations.js';
 import { Media } from './resources/media.js';
+import { Members } from './resources/members.js';
 import { Posts } from './resources/posts.js';
 import { RecurringPosts } from './resources/recurring-posts.js';
 import { RssFeeds } from './resources/rss-feeds.js';
@@ -24,6 +26,8 @@ export class AdaptlyPost {
   readonly analytics: Analytics;
   readonly ai: Ai;
   readonly workspaces: Workspaces;
+  readonly members: Members;
+  readonly invitations: Invitations;
 
   private readonly http: HttpClient;
 
@@ -40,6 +44,8 @@ export class AdaptlyPost {
     this.analytics = new Analytics(this.http);
     this.ai = new Ai(this.http);
     this.workspaces = new Workspaces(this.http);
+    this.members = new Members(this.http);
+    this.invitations = new Invitations(this.http);
   }
 
   me(options?: RequestOptions): Promise<ResponseBody<'getMe'>> {

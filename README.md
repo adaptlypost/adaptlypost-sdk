@@ -1,6 +1,6 @@
 # @adaptlypost/sdk
 
-TypeScript client for the [AdaptlyPost](https://adaptlypost.com) API: posts, media, connected accounts, connect links, inbox, webhooks, analytics and AI. Every request and response type comes from the API's OpenAPI document, so the editor knows each field and the compiler catches a wrong one.
+TypeScript client for the [AdaptlyPost](https://adaptlypost.com) API: posts, media, connected accounts, connect links, inbox, webhooks, analytics, AI, workspaces and team members. Every request and response type comes from the API's OpenAPI document, so the editor knows each field and the compiler catches a wrong one.
 
 It runs on Node 20.3+, Bun, Deno, edge runtimes and the browser, with no dependencies.
 
@@ -110,6 +110,34 @@ if (result?.status === 'connected') {
 ```
 
 The client sees the network's own consent screen, and the tokens stay with AdaptlyPost. `accountIds` are the same ids `accounts.list()` returns. A Facebook or LinkedIn page pick that connects several accounts returns several ids.
+
+## Workspaces and team
+
+```ts
+const workspace = await adaptly.workspaces.create({ name: 'Client B', connectionLimit: 10 });
+
+const invitation = await adaptly.invitations.send({
+  email: 'ana@example.com',
+  workspaces: [{ workspaceId: workspace.id, role: 'editor' }],
+});
+
+const { members } = await adaptly.withWorkspace(workspace.id).members.list();
+```
+
+| Method                                    | What it does                                                                 |
+| ----------------------------------------- | ---------------------------------------------------------------------------- |
+| `workspaces.create(body)`                 | Creates a workspace. Every organization owner and admin becomes its admin    |
+| `workspaces.delete(id)`                   | Deletes a workspace and everything in it                                     |
+| `members.list()`                          | Members of the workspace the call acts in, with their roles                  |
+| `members.remove(userId)`                  | Removes someone from this workspace only. They stay in the organization      |
+| `members.removeFromOrganization(userId)`  | Removes someone from the organization and every workspace in it              |
+| `invitations.send(body)`                  | Emails an invitation that lasts 7 days                                       |
+| `invitations.list(query)` / `listAll()`   | Invitations that include this workspace, newest first                        |
+| `invitations.revoke(id)`                  | Revokes a pending invitation                                                 |
+
+Creating or deleting a workspace needs an Admin key (`workspace.manage`). Listing members needs `members.read`, and the other member and invitation calls need `members.manage`. Creating or deleting a workspace and removing someone from the organization also need a key created by an organization owner or admin.
+
+Removing someone revokes their API keys and connect links. The API refuses to delete the default workspace, the last one, or one with connected social accounts. It also refuses to remove a member's last workspace, so remove them from the organization instead. When the plan has no room for another workspace or team seat, the call throws a `PermissionDeniedError` with `code` `subscription_required`.
 
 ## Webhooks
 

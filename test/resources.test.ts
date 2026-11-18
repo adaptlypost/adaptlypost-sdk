@@ -103,3 +103,143 @@ describe('connectLinks', () => {
     expect(calls[0]?.url.pathname).toBe('/post/api/v1/connect-links/a%2Fb');
   });
 });
+
+describe('workspaces', () => {
+  it('creates a workspace', async () => {
+    const { fetch, calls } = fakeFetch(() =>
+      json(201, {
+        id: 'w2',
+        name: 'Client B',
+        description: null,
+        organizationId: 'o1',
+        isDefault: false,
+        connectionLimit: 5,
+        createdAt: '2026-11-18T09:00:00Z',
+      }),
+    );
+
+    const workspace = await client(fetch).workspaces.create({ name: 'Client B', connectionLimit: 5 });
+
+    expect(workspace.id).toBe('w2');
+    expect(calls[0]?.method).toBe('POST');
+    expect(calls[0]?.url.pathname).toBe('/post/api/v1/workspaces');
+    expect(calls[0]?.body).toEqual({ name: 'Client B', connectionLimit: 5 });
+  });
+
+  it('deletes a workspace', async () => {
+    const { fetch, calls } = fakeFetch(() => json(200, { success: true }));
+
+    await client(fetch).workspaces.delete('w/2');
+
+    expect(calls[0]?.method).toBe('DELETE');
+    expect(calls[0]?.url.pathname).toBe('/post/api/v1/workspaces/w%2F2');
+  });
+});
+
+describe('members', () => {
+  it('lists the members of the workspace', async () => {
+    const { fetch, calls } = fakeFetch(() =>
+      json(200, {
+        members: [
+          {
+            userId: 'u1',
+            email: 'ana@example.com',
+            firstName: 'Ana',
+            lastName: null,
+            role: 'editor',
+            organizationRoles: ['org-member'],
+            joinedAt: '2026-11-01T09:00:00Z',
+          },
+        ],
+      }),
+    );
+
+    const { members } = await client(fetch).members.list();
+
+    expect(members.map((member) => member.role)).toEqual(['editor']);
+    expect(calls[0]?.url.pathname).toBe('/post/api/v1/members');
+  });
+
+  it('removes a member from the workspace', async () => {
+    const { fetch, calls } = fakeFetch(() => json(200, { success: true }));
+
+    await client(fetch).members.remove('u1');
+
+    expect(calls[0]?.method).toBe('DELETE');
+    expect(calls[0]?.url.pathname).toBe('/post/api/v1/members/u1');
+  });
+
+  it('removes a member from the organization', async () => {
+    const { fetch, calls } = fakeFetch(() => json(200, { success: true }));
+
+    await client(fetch).members.removeFromOrganization('u1');
+
+    expect(calls[0]?.method).toBe('DELETE');
+    expect(calls[0]?.url.pathname).toBe('/post/api/v1/organization/members/u1');
+  });
+});
+
+describe('invitations', () => {
+  const invitation = {
+    id: 'i1',
+    email: 'ana@example.com',
+    organizationId: 'o1',
+    organizationRole: 'org-member',
+    status: 'pending',
+    workspaces: [{ workspaceId: 'w1', workspaceName: 'Main', role: 'editor' }],
+    expiresAt: '2026-11-25T09:00:00Z',
+    createdAt: '2026-11-18T09:00:00Z',
+  };
+
+  it('sends an invitation', async () => {
+    const { fetch, calls } = fakeFetch(() => json(201, invitation));
+
+    const sent = await client(fetch).invitations.send({
+      email: 'ana@example.com',
+      workspaces: [{ workspaceId: 'w1', role: 'editor' }],
+      creditAllowance: { mode: 'MONTHLY', monthlyAmount: 100 },
+    });
+
+    expect(sent.status).toBe('pending');
+    expect(calls[0]?.method).toBe('POST');
+    expect(calls[0]?.url.pathname).toBe('/post/api/v1/invitations');
+    expect(calls[0]?.body).toEqual({
+      email: 'ana@example.com',
+      workspaces: [{ workspaceId: 'w1', role: 'editor' }],
+      creditAllowance: { mode: 'MONTHLY', monthlyAmount: 100 },
+    });
+  });
+
+  it('lists invitations with paging', async () => {
+    const { fetch, calls } = fakeFetch(() => json(200, { invitations: [invitation], total: 1, hasMore: false }));
+
+    const { invitations } = await client(fetch).invitations.list({ limit: 10, offset: 5 });
+
+    expect(invitations).toHaveLength(1);
+    expect(calls[0]?.url.searchParams.get('limit')).toBe('10');
+    expect(calls[0]?.url.searchParams.get('offset')).toBe('5');
+  });
+
+  it('walks every invitation with offsets', async () => {
+    const { fetch, calls } = fakeFetch(
+      () => json(200, { invitations: [invitation], total: 2, hasMore: true }),
+      () => json(200, { invitations: [{ ...invitation, id: 'i2' }], total: 2, hasMore: false }),
+    );
+
+    const ids: string[] = [];
+    for await (const item of client(fetch).invitations.listAll({ limit: 1 })) ids.push(item.id);
+
+    expect(ids).toEqual(['i1', 'i2']);
+    expect(calls.map((call) => call.url.searchParams.get('offset'))).toEqual(['0', '1']);
+  });
+
+  it('revokes an invitation', async () => {
+    const { fetch, calls } = fakeFetch(() => json(200, { ...invitation, status: 'revoked' }));
+
+    const revoked = await client(fetch).invitations.revoke('i1');
+
+    expect(revoked.status).toBe('revoked');
+    expect(calls[0]?.method).toBe('DELETE');
+    expect(calls[0]?.url.pathname).toBe('/post/api/v1/invitations/i1');
+  });
+});
