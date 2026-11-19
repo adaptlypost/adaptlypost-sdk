@@ -729,7 +729,7 @@ export interface paths {
         };
         /**
          * Look up a LinkedIn company page to mention
-         * @description Finds a LinkedIn company page by its URL or vanity name (the part after `linkedin.com/company/`) and returns the `mention` to paste into a LinkedIn post text, such as `@[Acme](urn:li:organization:123)`. LinkedIn only matches the exact vanity name, so `acme` finds Acme while `acm` or a company name with spaces finds nothing. The lookup runs on the workspace's own LinkedIn accounts, so the workspace needs at least one connected LinkedIn account, ideally a company page it administers. Requires the `accounts.read` permission.
+         * @description Finds a LinkedIn company page by its URL or vanity name (the part after `linkedin.com/company/`) and returns the `mention` to paste into a LinkedIn post text, such as `@[Acme](urn:li:organization:123)`. LinkedIn only matches the exact vanity name, so `acme` finds Acme while `acm` or a company name with spaces finds nothing, which answers 200 with `organization: null`. The lookup runs on the workspace's own LinkedIn accounts, so the workspace needs at least one connected LinkedIn account, ideally a company page it administers. Requires the `accounts.read` permission.
          */
         get: operations["lookupLinkedInOrganization"];
         put?: never;
@@ -1788,7 +1788,7 @@ export interface components {
             statusCode?: number;
             message?: string | string[];
             error?: string;
-            /** @description Machine-readable reason. `permission_denied` (403) means the role is short of a permission, `subscription_required` (403) means the organization's plan is not active, `token_issuer_lost_access` (401) means the key is dead because its creator left the workspace, `oauth_account_not_found` (401) means the login behind an OAuth access token has no AdaptlyPost account, `insufficient_credits` (402) means the AI endpoints are out of credits for this user, `workspace_access_denied` (403) means the `X-Workspace-Id` header names a workspace the caller cannot act in, `post_validation_failed` (400) means the post was refused and `issues` lists why, `linkedin_organization_query_invalid` (400) means the LinkedIn lookup query is not a company page URL or vanity name, `linkedin_organization_not_found` (404) means LinkedIn has no company page with that vanity name, `linkedin_organization_lookup_unavailable` (400) means no LinkedIn account of the workspace could run the lookup, so connect or reconnect one, `inbox_item_not_found` (404) means the inbox item is unknown or belongs to another workspace, `inbox_action_unsupported` (400) means the platform or the comment does not allow that action, `inbox_reconnect_required` (403) means the account must be reconnected in AdaptlyPost for this channel or action, `inbox_reply_invalid` (400) means the reply text is empty or too long, `inbox_messaging_window_closed` (400) means the 24-hour messaging window passed, `inbox_rate_limited` (429) means the platform rate limited the inbox, `inbox_platform_error` (503) means the platform failed */
+            /** @description Machine-readable reason. `permission_denied` (403) means the role is short of a permission, `subscription_required` (403) means the organization's plan is not active, `token_issuer_lost_access` (401) means the key is dead because its creator left the workspace, `oauth_account_not_found` (401) means the login behind an OAuth access token has no AdaptlyPost account, `insufficient_credits` (402) means the AI endpoints are out of credits for this user, `workspace_access_denied` (403) means the `X-Workspace-Id` header names a workspace the caller cannot act in, `post_validation_failed` (400) means the post was refused and `issues` lists why, `linkedin_organization_query_invalid` (400) means the LinkedIn lookup query is not a company page URL or vanity name, `linkedin_organization_lookup_unavailable` (400) means no LinkedIn account of the workspace could run the lookup, so connect or reconnect one, `inbox_item_not_found` (404) means the inbox item is unknown or belongs to another workspace, `inbox_action_unsupported` (400) means the platform or the comment does not allow that action, `inbox_reconnect_required` (403) means the account must be reconnected in AdaptlyPost for this channel or action, `inbox_reply_invalid` (400) means the reply text is empty or too long, `inbox_messaging_window_closed` (400) means the 24-hour messaging window passed, `inbox_rate_limited` (429) means the platform rate limited the inbox, `inbox_platform_error` (503) means the platform failed */
             code?: string;
             /** @description Set with `code: post_validation_failed` */
             issues?: components["schemas"]["PostIssue"][];
@@ -6204,14 +6204,14 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description The company page */
+            /** @description The company page, or `organization: null` when LinkedIn has no company page with that vanity name */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        organization: components["schemas"]["LinkedInOrganization"];
+                        organization: components["schemas"]["LinkedInOrganization"] | null;
                     };
                 };
             };
@@ -6240,15 +6240,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PermissionDeniedError"];
-                };
-            };
-            /** @description `linkedin_organization_not_found` when LinkedIn has no company page with that vanity name */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
                 };
             };
             /** @description Rate limit exceeded */
