@@ -1,0 +1,21 @@
+src/generated/openapi.ts
+  s_337947f7f8702a::t_eed957c2e27488 282,703-722,1866,1901,2009-2020,2190,2750,2914,3018,3025-3028,6146-6218
+src/resources/accounts.ts
+  s_337947f7f8702a::t_485cda54a695e8 32-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1d034f9fc011b6182afbeeace9532e462f28f065",
+  "prompts": {},
+  "sessions": {
+    "s_337947f7f8702a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9589e5b8-7870-4314-8c74-bff4b2ffa2c0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Taras Shynkarenko <taras.shinkarenko@gmail.com>"
+    }
+  }
+}
