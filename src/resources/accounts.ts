@@ -29,6 +29,10 @@ export class Accounts {
     return this.http.get(`/social-accounts/${segment(id)}/pinterest-boards`, undefined, options);
   }
 
+  youtubePlaylists(id: string, options?: RequestOptions): Promise<ResponseBody<'getYouTubePlaylists'>> {
+    return this.http.get(`/social-accounts/${segment(id)}/youtube-playlists`, undefined, options);
+  }
+
   wordpressCategories(id: string, options?: RequestOptions): Promise<ResponseBody<'getWordPressCategories'>> {
     return this.http.get(`/social-accounts/${segment(id)}/wordpress-categories`, undefined, options);
   }

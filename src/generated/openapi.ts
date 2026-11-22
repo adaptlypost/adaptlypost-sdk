@@ -279,7 +279,7 @@ export interface paths {
         head?: never;
         /**
          * Update a draft, scheduled or failed post
-         * @description A post that failed on every platform becomes a draft again, with its platforms back to pending. Publish or schedule it with POST /social-posts/{id}/publish. A post that published on some platforms and failed on others cannot be edited. Requires the `posts.draft` permission.
+         * @description A post that failed on every platform becomes a draft again, with its platforms back to pending. Publish or schedule it with POST /social-posts/{id}/publish. A post that published on some platforms and failed on others cannot be edited. Sent without `platforms`, `youtubeConfigs` changes only the fields it names on the post's YouTube account, such as `scheduleOnYouTube` or `playlistId`; a `connectionId` the post does not publish to is refused with a 400 `YOUTUBE_CONFIG_NOT_ON_POST`. Requires the `posts.draft` permission.
          */
         patch: operations["updatePost"];
         trace?: never;
@@ -692,6 +692,26 @@ export interface paths {
          * @description Returns every board the account can pin to, secret boards included. Pass the chosen `id` as `pinterestConfigs[].boardId`, or its `name` as `pinterestConfigs[].boardName`. A board belongs to one Pinterest account, so list the boards of each account you post to. Requires the `posts.draft` permission.
          */
         get: operations["getPinterestBoards"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social-accounts/{id}/youtube-playlists": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the playlists of a YouTube channel
+         * @description Returns every playlist of the channel, private and unlisted ones included. Pass the chosen `id` as `youtubeConfigs[].playlistId` to add the uploaded video to that playlist. A playlist belongs to one channel, so list the playlists of each channel you post to. Requires the `posts.draft` permission.
+         */
+        get: operations["getYouTubePlaylists"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1843,7 +1863,7 @@ export interface components {
             }[];
         };
         /** @enum {string} */
-        WorkspacePermission: "workspace.read" | "workspace.manage" | "posts.read" | "posts.draft" | "posts.others" | "posts.schedule" | "posts.publish" | "posts.delete" | "media.upload" | "accounts.read" | "accounts.manage" | "analytics.read" | "analytics.sync" | "inbox.read" | "inbox.reply" | "ai.generate" | "members.read" | "members.manage" | "tokens.own" | "tokens.manage" | "webhooks.read" | "webhooks.manage" | "signature.manage" | "flowsery.write" | "redreplier.write" | "claw.use";
+        WorkspacePermission: "workspace.read" | "workspace.manage" | "posts.read" | "posts.draft" | "posts.others" | "posts.schedule" | "posts.publish" | "posts.delete" | "media.upload" | "accounts.read" | "accounts.manage" | "analytics.read" | "analytics.sync" | "inbox.read" | "inbox.reply" | "ai.generate" | "members.read" | "members.manage" | "tokens.own" | "tokens.manage" | "webhooks.read" | "webhooks.manage" | "signature.manage" | "labels.manage" | "flowsery.write" | "redreplier.write" | "claw.use";
         PermissionDeniedError: {
             /** @enum {integer} */
             statusCode: 403;
@@ -1878,7 +1898,7 @@ export interface components {
                 key: string;
                 name: string;
             };
-            permissions: ("workspace.read" | "workspace.manage" | "posts.read" | "posts.draft" | "posts.others" | "posts.schedule" | "posts.publish" | "posts.delete" | "media.upload" | "accounts.read" | "accounts.manage" | "analytics.read" | "analytics.sync" | "inbox.read" | "inbox.reply" | "ai.generate" | "members.read" | "members.manage" | "tokens.own" | "tokens.manage" | "webhooks.read" | "webhooks.manage" | "signature.manage" | "flowsery.write" | "redreplier.write" | "claw.use")[];
+            permissions: ("workspace.read" | "workspace.manage" | "posts.read" | "posts.draft" | "posts.others" | "posts.schedule" | "posts.publish" | "posts.delete" | "media.upload" | "accounts.read" | "accounts.manage" | "analytics.read" | "analytics.sync" | "inbox.read" | "inbox.reply" | "ai.generate" | "members.read" | "members.manage" | "tokens.own" | "tokens.manage" | "webhooks.read" | "webhooks.manage" | "signature.manage" | "labels.manage" | "flowsery.write" | "redreplier.write" | "claw.use")[];
             isDefault: boolean;
             /** @description True for the workspace this call landed in */
             current: boolean;
@@ -1985,6 +2005,18 @@ export interface components {
             /** @description `PUBLIC`, `PROTECTED` or `SECRET`, as Pinterest reports it */
             privacy?: string;
             pinCount?: number;
+        };
+        YouTubePlaylist: {
+            /**
+             * @description Pass as `youtubeConfigs[].playlistId`
+             * @example PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf
+             */
+            id: string;
+            title: string;
+            /** @description `public`, `unlisted` or `private`, as YouTube reports it */
+            privacyStatus?: string;
+            /** @description Number of videos in the playlist */
+            itemCount?: number;
         };
         LinkedInOrganization: {
             /** @example 2414183 */
@@ -2155,6 +2187,7 @@ export interface components {
              */
             defaultAudioLanguage?: string | null;
             categoryId?: string;
+            /** @description Id of a playlist on this channel; the uploaded video is added to it. List the ids with GET /social-accounts/{id}/youtube-playlists */
             playlistId?: string;
             /** @description Upload the video as soon as the post is scheduled, as a private video that YouTube publishes itself at `scheduledAt`, so it can be changed in YouTube Studio first. A post with another `privacyStatus` than `public`, or one that repeats, is refused with a 400. With a `scheduledAt` less than 15 minutes ahead the video uploads at `scheduledAt` as usual. While the video waits on YouTube for its publication, the post cannot be updated or unscheduled (409); deleting it before `scheduledAt` also deletes the video from YouTube. `youtubeScheduledVideoId` on the post platform is set once the upload is done */
             scheduleOnYouTube?: boolean;
@@ -2714,7 +2747,7 @@ export interface components {
             errorMessage?: string;
             /** Format: date-time */
             publishedAt?: string;
-            /** @description The media as submitted. After publishing, some platforms replace these with their own CDN links, which expire, and the uploaded source files are removed. Use `previewUrls` for anything you display later */
+            /** @description The media as submitted. After publishing, some platforms replace these with their own CDN links, which expire. Files uploaded to us stay downloadable for 3 days after the post publishes, then we delete them. Use `previewUrls` for anything you display later */
             mediaUrls: string[];
             mediaAltTexts: string[];
             /** @description The media set for this platform through `platformMedia`; empty when the platform uses the post media */
@@ -2878,7 +2911,7 @@ export interface components {
             /** @description The media as submitted, shared by every platform entry. See `mediaUrls` on PostPlatform for how these change after publishing */
             mediaUrls: string[];
             mediaAltTexts?: string[];
-            /** @description True while the files uploaded for this post are still stored. They are removed after publishing, so use `previewUrls` on each platform for anything you display later */
+            /** @description True while the files uploaded for this post are still stored. We delete them 3 days after the post publishes, so use `previewUrls` on each platform for anything you display later */
             mediaRetained: boolean;
             platforms: components["schemas"]["PostPlatform"][];
             /** @description The recurring post this post is an occurrence of */
@@ -2982,14 +3015,17 @@ export interface components {
         CreateWebhookRequest: {
             /**
              * Format: uri
-             * @description Publicly reachable http(s) endpoint
+             * @description Publicly reachable https endpoint. Hosts that resolve to local, private or internal network addresses are refused
              */
             url: string;
             /** @description The events to receive. Leave it out or send [] for post.published, post.partially_failed, post.failed, post.scheduled, account.unauthorized, image.completed, image.failed. The inbox events are delivered only when listed here */
             events?: components["schemas"]["WebhookEventName"][];
         };
         UpdateWebhookRequest: {
-            /** Format: uri */
+            /**
+             * Format: uri
+             * @description Publicly reachable https endpoint. Hosts that resolve to local, private or internal network addresses are refused
+             */
             url?: string;
             active?: boolean;
             /** @description Replaces the list of events to receive; [] goes back to the default events */
@@ -6088,6 +6124,79 @@ export interface operations {
                 };
             };
             /** @description Account not found, or not a Pinterest account */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Rate limit exceeded */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getYouTubePlaylists: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act in, for OAuth sign-ins that reach several workspaces. Take the id from `GET /workspaces`. Without it the call lands in the default workspace. A workspace the caller cannot reach answers 403 with `code: workspace_access_denied`. An API key belongs to one workspace: send its own id or leave the header out */
+                "X-Workspace-Id"?: string;
+            };
+            path: {
+                /** @description The YouTube account `id` from /social-accounts */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Playlists of the channel */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        playlists: components["schemas"]["YouTubePlaylist"][];
+                    };
+                };
+            };
+            /** @description YouTube refused the request, usually because the account must be reconnected */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Invalid or missing API key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key's role does not hold `posts.draft` */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PermissionDeniedError"];
+                };
+            };
+            /** @description Account not found, or not a YouTube account */
             404: {
                 headers: {
                     [name: string]: unknown;
