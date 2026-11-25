@@ -2668,6 +2668,8 @@ export interface components {
             tumblrConfigs?: components["schemas"]["TumblrPostConfig"][];
             /** @description WordPress per-site options: a title, an excerpt, category ids from `GET /social-accounts/{id}/wordpress-categories`, tag names and the `status` the post gets on the site (`PUBLISH`, `DRAFT` or `PENDING`). `connectionId` must match an entry in `wordpressConnectionIds` */
             wordpressConfigs?: components["schemas"]["WordPressPostConfig"][];
+            /** @description X per-account options. `connectionId` must match an entry in `twitterConnectionIds` */
+            twitterConfigs?: components["schemas"]["TwitterPostConfig"][];
         };
         BulkSchedulePostsRequest: {
             /** @description Platforms to post to. Each one also needs its connection ids */
@@ -2706,6 +2708,8 @@ export interface components {
             tumblrConfigs?: components["schemas"]["TumblrPostConfig"][];
             /** @description WordPress per-site options: a title, an excerpt, category ids from `GET /social-accounts/{id}/wordpress-categories`, tag names and the `status` the post gets on the site (`PUBLISH`, `DRAFT` or `PENDING`). `connectionId` must match an entry in `wordpressConnectionIds` */
             wordpressConfigs?: components["schemas"]["WordPressPostConfig"][];
+            /** @description X per-account options. `connectionId` must match an entry in `twitterConnectionIds` */
+            twitterConfigs?: components["schemas"]["TwitterPostConfig"][];
         };
         PublishDraftRequest: {
             /**

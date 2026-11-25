@@ -1,6 +1,6 @@
 {
   "name": "@adaptlypost/sdk",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "TypeScript client for the AdaptlyPost API",
   "keywords": [
     "adaptlypost",
