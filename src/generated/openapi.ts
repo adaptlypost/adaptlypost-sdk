@@ -1996,6 +1996,8 @@ export interface components {
             title?: string;
             /** Format: uri */
             link?: string;
+            /** @description Disclose that the Pin was made or modified with AI. Sends Pinterest the `AI_MODIFIED` disclosure, which shows an "AI modified" label on the Pin. Works on image, video and carousel Pins. Omit it or send `false` for no label. */
+            aiGenerated?: boolean;
         };
         PinterestBoard: {
             /** @description Pass as `pinterestConfigs[].boardId`, or pass `name` as `pinterestConfigs[].boardName` */
@@ -2165,6 +2167,13 @@ export interface components {
             connectionId: string;
             /** @description Quote one of this account's own X posts, with the post text as the commentary. Takes a post link such as `https://x.com/<handle>/status/<id>` or the post's numeric id, such as the `platformPostId` from /social-posts/{id}/results. X only lets an account quote posts it wrote or posts that mention it, so a link naming another handle is rejected before posting, and any other post fails at publish time. The text is required and media on the post is not attached on this account. A quote costs the same as any X post */
             quoteOf?: string;
+            /** @description Disclose that the post contains AI-generated media. Sets `made_with_ai` on the X post, and X labels it. Omit it or send `false` for no label. */
+            aiGenerated?: boolean;
+        };
+        ThreadsPostConfig: {
+            connectionId: string;
+            /** @description Disclose that the post contains AI-generated content. Threads shows its "AI info" label on the post. Works on text, image, video and carousel posts; on a carousel the label covers the whole post. Thread replies do not carry it. Omit it or send `false` for no label. */
+            aiGenerated?: boolean;
         };
         YouTubePostConfig: {
             connectionId: string;
@@ -2320,6 +2329,8 @@ export interface components {
             facebookConfigs?: components["schemas"]["FacebookPostConfig"][];
             youtubeConfigs?: components["schemas"]["YouTubePostConfig"][];
             googleBusinessConfigs?: components["schemas"]["GoogleBusinessPostConfig"][];
+            /** @description Threads per-account options. `connectionId` must match an entry in `threadsConnectionIds` */
+            threadsConfigs?: components["schemas"]["ThreadsPostConfig"][];
             /** @description Tumblr per-blog options: tags, a title and a source link. `connectionId` must match an entry in `tumblrConnectionIds` */
             tumblrConfigs?: components["schemas"]["TumblrPostConfig"][];
             /** @description WordPress per-site options: a title, an excerpt, category ids from `GET /social-accounts/{id}/wordpress-categories`, tag names and the `status` the post gets on the site (`PUBLISH`, `DRAFT` or `PENDING`). `connectionId` must match an entry in `wordpressConnectionIds` */
@@ -2605,6 +2616,8 @@ export interface components {
             facebookConfigs?: components["schemas"]["FacebookPostConfig"][];
             youtubeConfigs?: components["schemas"]["YouTubePostConfig"][];
             googleBusinessConfigs?: components["schemas"]["GoogleBusinessPostConfig"][];
+            /** @description Threads per-account options. `connectionId` must match an entry in `threadsConnectionIds` */
+            threadsConfigs?: components["schemas"]["ThreadsPostConfig"][];
             /** @description Tumblr per-blog options: tags, a title and a source link. `connectionId` must match an entry in `tumblrConnectionIds` */
             tumblrConfigs?: components["schemas"]["TumblrPostConfig"][];
             /** @description WordPress per-site options: a title, an excerpt, category ids from `GET /social-accounts/{id}/wordpress-categories`, tag names and the `status` the post gets on the site (`PUBLISH`, `DRAFT` or `PENDING`). `connectionId` must match an entry in `wordpressConnectionIds` */
@@ -2649,6 +2662,8 @@ export interface components {
             facebookConfigs?: components["schemas"]["FacebookPostConfig"][];
             youtubeConfigs?: components["schemas"]["YouTubePostConfig"][];
             googleBusinessConfigs?: components["schemas"]["GoogleBusinessPostConfig"][];
+            /** @description Threads per-account options. `connectionId` must match an entry in `threadsConnectionIds` */
+            threadsConfigs?: components["schemas"]["ThreadsPostConfig"][];
             /** @description Tumblr per-blog options: tags, a title and a source link. `connectionId` must match an entry in `tumblrConnectionIds` */
             tumblrConfigs?: components["schemas"]["TumblrPostConfig"][];
             /** @description WordPress per-site options: a title, an excerpt, category ids from `GET /social-accounts/{id}/wordpress-categories`, tag names and the `status` the post gets on the site (`PUBLISH`, `DRAFT` or `PENDING`). `connectionId` must match an entry in `wordpressConnectionIds` */
@@ -2685,6 +2700,8 @@ export interface components {
             facebookConfigs?: components["schemas"]["FacebookPostConfig"][];
             youtubeConfigs?: components["schemas"]["YouTubePostConfig"][];
             googleBusinessConfigs?: components["schemas"]["GoogleBusinessPostConfig"][];
+            /** @description Threads per-account options. `connectionId` must match an entry in `threadsConnectionIds` */
+            threadsConfigs?: components["schemas"]["ThreadsPostConfig"][];
             /** @description Tumblr per-blog options: tags, a title and a source link. `connectionId` must match an entry in `tumblrConnectionIds` */
             tumblrConfigs?: components["schemas"]["TumblrPostConfig"][];
             /** @description WordPress per-site options: a title, an excerpt, category ids from `GET /social-accounts/{id}/wordpress-categories`, tag names and the `status` the post gets on the site (`PUBLISH`, `DRAFT` or `PENDING`). `connectionId` must match an entry in `wordpressConnectionIds` */
@@ -2799,6 +2816,8 @@ export interface components {
             pinterestBoardId?: string;
             pinterestTitle?: string;
             pinterestLink?: string;
+            /** @description Set when the Pin carries the AI-modified label; see `PinterestPostConfig.aiGenerated` */
+            pinterestAiGenerated?: boolean;
             tiktokTitle?: string;
             tiktokCaption?: string;
             tiktokPrivacyLevel?: string;
@@ -2873,6 +2892,10 @@ export interface components {
             twitterKeepLinks: boolean;
             /** @description The id of the X post this account quotes, when the post is a quote */
             twitterQuoteOf?: string;
+            /** @description Set when the X post carries the made-with-AI label; see `TwitterPostConfig.aiGenerated` */
+            twitterAiGenerated?: boolean;
+            /** @description Set when the Threads post carries the AI info label; see `ThreadsPostConfig.aiGenerated` */
+            threadsAiGenerated?: boolean;
             googleBusinessTopicType?: string;
             googleBusinessCallToActionType?: string;
             googleBusinessCallToActionUrl?: string;
