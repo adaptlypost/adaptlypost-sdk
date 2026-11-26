@@ -59,9 +59,15 @@ for await (const post of adaptly.posts.listAll({ statuses: ['SCHEDULED'] })) {
 
 await adaptly.posts.publish(created.postId, { timezone: 'UTC', publishNow: true });
 await adaptly.posts.retry(created.postId);
+
+const { labels } = await adaptly.labels.list();
+const acme = labels.find((label) => label.name === 'Acme');
+if (acme) {
+  await adaptly.posts.update(created.postId, { labelIds: [acme.id] });
+}
 ```
 
-`validate` runs every check a create runs and returns the problems without creating anything. `listAll` pages through the results for you. So do `recurringPosts.listAll`, `analytics.postsAll` and the inbox `listAll` methods.
+`validate` runs every check a create runs and returns the problems without creating anything. Labels are created in the AdaptlyPost app. `labels.list` returns their ids for `labelIds` on create and update, where an update with `labelIds` replaces the labels of the post and `[]` removes them. `posts.list({ labelIds })` returns the posts carrying any of them. `listAll` pages through the results for you. So do `recurringPosts.listAll`, `analytics.postsAll` and the inbox `listAll` methods.
 
 ## Media
 

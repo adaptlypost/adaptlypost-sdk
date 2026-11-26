@@ -136,6 +136,27 @@ describe('workspaces', () => {
   });
 });
 
+describe('labels', () => {
+  it('lists the labels of the workspace', async () => {
+    const { fetch, calls } = fakeFetch(() =>
+      json(200, { labels: [{ id: 'label-acme', name: 'Acme', color: '#3B82F6' }] }),
+    );
+
+    const { labels } = await client(fetch).labels.list();
+
+    expect(labels.map((label) => label.name)).toEqual(['Acme']);
+    expect(calls[0]?.url.pathname).toBe('/post/api/v1/labels');
+  });
+
+  it('filters posts by label', async () => {
+    const { fetch, calls } = fakeFetch(() => json(200, { posts: [], total: 0, hasMore: false }));
+
+    await client(fetch).posts.list({ labelIds: ['label-acme', 'label-globex'] });
+
+    expect(calls[0]?.url.searchParams.getAll('labelIds')).toEqual(['label-acme', 'label-globex']);
+  });
+});
+
 describe('members', () => {
   it('lists the members of the workspace', async () => {
     const { fetch, calls } = fakeFetch(() =>

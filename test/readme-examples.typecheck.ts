@@ -13,6 +13,11 @@ export const readmeExamples = async (adaptly: AdaptlyPost, body: CreatePostReque
   });
   await adaptly.posts.publish(created.postId ?? '', { timezone: 'UTC', publishNow: true });
   await adaptly.posts.retry(created.postId ?? '');
+  const { labels } = await adaptly.labels.list();
+  const acme = labels.find((label) => label.name === 'Acme');
+  if (acme) {
+    await adaptly.posts.update(created.postId ?? '', { labelIds: [acme.id] });
+  }
   const [photo] = await adaptly.media.upload({ fileName: 'launch.jpg', mimeType: 'image/jpeg', data: bytes });
   await adaptly.posts.create({
     text: 'We launched',

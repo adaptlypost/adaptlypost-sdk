@@ -29,6 +29,7 @@ export type ResponseBody<K extends OperationId> = SuccessContent<operations[K]['
 export type PlatformType = Schemas['PlatformType'];
 export type PostStatus = Schemas['PostStatus'];
 export type Post = Schemas['Post'];
+export type Label = Schemas['Label'];
 export type CreatePostRequest = Schemas['CreateSocialPostRequest'];
 export type UpdatePostRequest = Schemas['UpdateSocialPostRequest'];
 export type PostIssue = Schemas['PostIssue'];

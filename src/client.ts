@@ -5,6 +5,7 @@ import { Analytics } from './resources/analytics.js';
 import { ConnectLinks } from './resources/connect-links.js';
 import { Inbox } from './resources/inbox.js';
 import { Invitations } from './resources/invitations.js';
+import { Labels } from './resources/labels.js';
 import { Media } from './resources/media.js';
 import { Members } from './resources/members.js';
 import { Posts } from './resources/posts.js';
@@ -16,6 +17,7 @@ import type { ResponseBody } from './types.js';
 
 export class AdaptlyPost {
   readonly posts: Posts;
+  readonly labels: Labels;
   readonly recurringPosts: RecurringPosts;
   readonly rssFeeds: RssFeeds;
   readonly accounts: Accounts;
@@ -34,6 +36,7 @@ export class AdaptlyPost {
   constructor(private readonly options: ClientOptions = {}) {
     this.http = new HttpClient(resolveClientOptions(options));
     this.posts = new Posts(this.http);
+    this.labels = new Labels(this.http);
     this.recurringPosts = new RecurringPosts(this.http);
     this.rssFeeds = new RssFeeds(this.http);
     this.accounts = new Accounts(this.http);

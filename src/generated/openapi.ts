@@ -364,6 +364,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/labels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the labels of the workspace
+         * @description Returns every label of the workspace, sorted by name. Labels are created in the AdaptlyPost app. Pass their `id`s in `labelIds` when you create or update a post, or as the `labelIds` filter of GET /social-posts. Requires the `posts.read` permission.
+         */
+        get: operations["listLabels"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/recurring-posts": {
         parameters: {
             query?: never;
@@ -1247,7 +1267,7 @@ export interface paths {
         put?: never;
         /**
          * Register a webhook endpoint
-         * @description Registers a URL. Without `events`, or with an empty list, it receives post.published, post.partially_failed, post.failed, post.scheduled, account.unauthorized, image.completed, image.failed; with `events` it receives only the events listed. The inbox events (comment.created, comment.replied, mention.created, message.received, review.created) are opt-in: a webhook receives one only when its `events` names it. They come from the inbox sync, which runs every 10 minutes per account, so they arrive within about 10 minutes, not in real time; comment.replied also fires right away for a reply sent through AdaptlyPost. The first sync of an account, or of a channel, imports its history without firing events. Deliveries are HTTP POSTs with a WebhookEventPayload body, retried up to 5 times with exponential backoff. Each request includes `x-adaptly-signature`, `x-adaptly-timestamp`, `x-adaptly-event`, and `x-adaptly-webhook-id` headers. Webhooks are auto-disabled after 20 consecutive failed deliveries, and at once when the endpoint answers 410 Gone. Requires the `webhooks.manage` permission.
+         * @description Registers a URL. Without `events`, or with an empty list, it receives post.published, post.partially_failed, post.failed, post.scheduled, account.unauthorized, image.completed, image.failed; with `events` it receives only the events listed. The inbox events (comment.created, comment.replied, mention.created, message.received, review.created) are opt-in: a webhook receives one only when its `events` names it. They come from the inbox sync, which runs every 10 minutes per account, so they arrive within about 10 minutes, not in real time; comment.replied also fires right away for a reply sent through AdaptlyPost. The first sync of an account, or of a channel, imports its history without firing events. Deliveries are HTTP POSTs with a WebhookEventPayload body, retried up to 5 times with exponential backoff. Each request includes `x-adaptly-signature`, `x-adaptly-timestamp`, `x-adaptly-event`, and `x-adaptly-webhook-id` headers. A webhook whose deliveries have all failed for 3 hours emails its creator a warning. It is auto-disabled once its deliveries have all failed for 3 days, with no successful delivery in that time, and at once when the endpoint answers 410 Gone. Its creator gets an email when it is disabled. A successful delivery or re-enabling the webhook starts the count again. Requires the `webhooks.manage` permission.
          */
         post: operations["createWebhook"];
         delete?: never;
@@ -2035,6 +2055,16 @@ export interface components {
              */
             mention: string;
         };
+        Label: {
+            /** @description Pass in `labelIds` of a post */
+            id: string;
+            name: string;
+            /**
+             * @description Hex color the app shows the label in
+             * @example #3B82F6
+             */
+            color: string;
+        };
         WordPressCategory: {
             /** @description Pass in `wordpressConfigs[].categoryIds` */
             id: number;
@@ -2198,7 +2228,7 @@ export interface components {
             categoryId?: string;
             /** @description Id of a playlist on this channel; the uploaded video is added to it. List the ids with GET /social-accounts/{id}/youtube-playlists */
             playlistId?: string;
-            /** @description Upload the video as soon as the post is scheduled, as a private video that YouTube publishes itself at `scheduledAt`, so it can be changed in YouTube Studio first. A post with another `privacyStatus` than `public`, or one that repeats, is refused with a 400. With a `scheduledAt` less than 15 minutes ahead the video uploads at `scheduledAt` as usual. While the video waits on YouTube for its publication, the post cannot be updated or unscheduled (409); deleting it before `scheduledAt` also deletes the video from YouTube. `youtubeScheduledVideoId` on the post platform is set once the upload is done */
+            /** @description Upload the video 48 hours before `scheduledAt` (at once when `scheduledAt` is closer), as a private video that YouTube publishes itself at `scheduledAt`, so it can be changed in YouTube Studio first. A post with another `privacyStatus` than `public`, or one that repeats, is refused with a 400. With a `scheduledAt` less than 15 minutes ahead the video uploads at `scheduledAt` as usual. While the video waits on YouTube for its publication, the post cannot be updated or unscheduled (409); deleting it before `scheduledAt` also deletes the video from YouTube. `youtubeScheduledVideoId` on the post platform is set once the upload is done */
             scheduleOnYouTube?: boolean;
         };
         /** @description Options for one Google Business Profile location. Google Business Profile takes `contentType` `TEXT` or `IMAGE` with one JPEG or PNG image up to 5 MB, and text up to 1500 characters */
@@ -2302,6 +2332,8 @@ export interface components {
             timezone: string;
             saveAsDraft?: boolean;
             recurrence?: components["schemas"]["Recurrence"];
+            /** @description Label `id`s from GET /labels to put on the post, for example one label per brand. An id that is not a label of the workspace returns 400. On an update, sending the array replaces every label of the post, `[]` removes them all, and omitting it keeps the stored ones */
+            labelIds?: string[];
             /** @description Facebook pages to post to. Accepts either the account `id` or the `pageId` returned by /social-accounts */
             pageIds?: string[];
             tiktokConnectionIds?: string[];
@@ -2399,7 +2431,7 @@ export interface components {
         };
         RssFeedTarget: {
             /** @enum {string} */
-            platform: "FACEBOOK" | "INSTAGRAM" | "THREADS" | "TWITTER" | "BLUESKY" | "LINKEDIN" | "MASTODON" | "TELEGRAM" | "GOOGLE_BUSINESS";
+            platform: "FACEBOOK" | "INSTAGRAM" | "THREADS" | "TWITTER" | "BLUESKY" | "LINKEDIN" | "MASTODON" | "TELEGRAM" | "GOOGLE_BUSINESS" | "PINTEREST";
             /** @description Account ID from `GET /social-accounts` */
             connectionId: string;
             /** @description Facebook page ID. Required for FACEBOOK */
@@ -2589,6 +2621,8 @@ export interface components {
              */
             scheduledAt?: string | null;
             timezone?: string;
+            /** @description Label `id`s from GET /labels to put on the post, for example one label per brand. An id that is not a label of the workspace returns 400. On an update, sending the array replaces every label of the post, `[]` removes them all, and omitting it keeps the stored ones */
+            labelIds?: string[];
             /** @description Facebook pages to post to. Accepts either the account `id` or the `pageId` returned by /social-accounts */
             pageIds?: string[];
             tiktokConnectionIds?: string[];
@@ -2941,6 +2975,8 @@ export interface components {
             /** @description True while the files uploaded for this post are still stored. We delete them 3 days after the post publishes, so use `previewUrls` on each platform for anything you display later */
             mediaRetained: boolean;
             platforms: components["schemas"]["PostPlatform"][];
+            /** @description Labels on the post, sorted by name */
+            labels: components["schemas"]["Label"][];
             /** @description The recurring post this post is an occurrence of */
             recurringPostId?: string;
             /**
@@ -3989,6 +4025,8 @@ export interface operations {
                 statuses?: ("DRAFT" | "SCHEDULED" | "PENDING" | "PUBLISHING" | "COMPLETED" | "PARTIAL_FAILURE" | "FAILED")[];
                 /** @description Posts targeting any of these platforms */
                 platforms?: ("FACEBOOK" | "INSTAGRAM" | "THREADS" | "TIKTOK" | "TWITTER" | "BLUESKY" | "LINKEDIN" | "PINTEREST" | "YOUTUBE" | "MASTODON" | "TELEGRAM" | "GOOGLE_BUSINESS" | "TUMBLR" | "WORDPRESS")[];
+                /** @description Posts carrying any of these labels */
+                labelIds?: string[];
                 startDate?: string;
                 endDate?: string;
             };
@@ -4847,6 +4885,58 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Rate limit exceeded */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listLabels: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act in, for OAuth sign-ins that reach several workspaces. Take the id from `GET /workspaces`. Without it the call lands in the default workspace. A workspace the caller cannot reach answers 403 with `code: workspace_access_denied`. An API key belongs to one workspace: send its own id or leave the header out */
+                "X-Workspace-Id"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Labels of the workspace */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        labels: components["schemas"]["Label"][];
+                    };
+                };
+            };
+            /** @description Invalid or missing API key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key's role does not hold `posts.read` */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PermissionDeniedError"];
                 };
             };
             /** @description Rate limit exceeded */
