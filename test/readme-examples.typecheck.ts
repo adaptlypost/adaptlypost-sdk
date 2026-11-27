@@ -18,6 +18,8 @@ export const readmeExamples = async (adaptly: AdaptlyPost, body: CreatePostReque
   if (acme) {
     await adaptly.posts.update(created.postId ?? '', { labelIds: [acme.id] });
   }
+
+  await adaptly.posts.setLabels(created.postId ?? '', { labelIds: [] });
   const [photo] = await adaptly.media.upload({ fileName: 'launch.jpg', mimeType: 'image/jpeg', data: bytes });
   await adaptly.posts.create({
     text: 'We launched',

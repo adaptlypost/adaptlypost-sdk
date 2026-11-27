@@ -50,6 +50,14 @@ export class Posts {
     return this.http.patch(`/social-posts/${segment(id)}`, body, options);
   }
 
+  setLabels(
+    id: string,
+    body: RequestBody<'setPostLabels'>,
+    options?: RequestOptions,
+  ): Promise<ResponseBody<'setPostLabels'>> {
+    return this.http.put(`/social-posts/${segment(id)}/labels`, body, options);
+  }
+
   delete(id: string, options?: RequestOptions): Promise<ResponseBody<'deletePost'>> {
     return this.http.delete(`/social-posts/${segment(id)}`, options);
   }

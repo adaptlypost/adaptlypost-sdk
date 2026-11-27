@@ -65,9 +65,11 @@ const acme = labels.find((label) => label.name === 'Acme');
 if (acme) {
   await adaptly.posts.update(created.postId, { labelIds: [acme.id] });
 }
+
+await adaptly.posts.setLabels(created.postId, { labelIds: [] });
 ```
 
-`validate` runs every check a create runs and returns the problems without creating anything. Labels are created in the AdaptlyPost app. `labels.list` returns their ids for `labelIds` on create and update, where an update with `labelIds` replaces the labels of the post and `[]` removes them. `posts.list({ labelIds })` returns the posts carrying any of them. `listAll` pages through the results for you. So do `recurringPosts.listAll`, `analytics.postsAll` and the inbox `listAll` methods.
+`validate` runs every check a create runs and returns the problems without creating anything. Labels are created in the AdaptlyPost app. `labels.list` returns their ids for `labelIds` on create and update, where an update with `labelIds` replaces the labels of the post and `[]` removes them. `posts.setLabels` replaces the labels of a post in any status, a published one included. Labels never reach a platform. `posts.list({ labelIds })` returns the posts carrying any of them. `listAll` pages through the results for you. So do `recurringPosts.listAll`, `analytics.postsAll` and the inbox `listAll` methods.
 
 ## Media
 

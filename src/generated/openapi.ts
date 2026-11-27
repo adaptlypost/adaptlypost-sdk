@@ -344,6 +344,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/social-posts/{id}/labels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set the labels of a post
+         * @description Replaces every label of the post, in any status, published posts included. Labels stay in AdaptlyPost and are never sent to a platform, so changing them after a post is published changes nothing on the platform. Requires the `posts.draft` permission.
+         */
+        put: operations["setPostLabels"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/social-posts/{id}/retry": {
         parameters: {
             query?: never;
@@ -2013,11 +2033,17 @@ export interface components {
             boardId?: string;
             /** @description The name of one of this account's boards, instead of `boardId`. AdaptlyPost looks it up when the post is created or updated and stores the board id. An exact match wins; otherwise the match ignores case. The request fails with 400 when no board has the name, when several do (the message lists their ids), or when `boardId` is also set. It never falls back to another board */
             boardName?: string;
+            /** @description A section `id` of the chosen board. Needs `boardId` or `boardName`. Leave out both `boardSectionId` and `boardSectionName` to pin to the board itself */
+            boardSectionId?: string;
+            /** @description The name of one of the chosen board's sections, instead of `boardSectionId`. AdaptlyPost looks it up when the post is created or updated and stores the section id. An exact match wins; otherwise the match ignores case. The request fails with 400 when no section has the name, when several do (the message lists their ids), when `boardSectionId` is also set, or when no board is given */
+            boardSectionName?: string;
             title?: string;
             /** Format: uri */
             link?: string;
             /** @description Disclose that the Pin was made or modified with AI. Sends Pinterest the `AI_MODIFIED` disclosure, which shows an "AI modified" label on the Pin. Works on image, video and carousel Pins. Omit it or send `false` for no label. */
             aiGenerated?: boolean;
+            /** @description Disclose that the Pin shows a person generated with AI. Sends Pinterest the `SYNTHETIC_PERFORMER` disclosure, next to `AI_MODIFIED` when `aiGenerated` is also set. Works on image, video and carousel Pins. Omit it or send `false` for no disclosure. */
+            aiGeneratedPerson?: boolean;
         };
         PinterestBoard: {
             /** @description Pass as `pinterestConfigs[].boardId`, or pass `name` as `pinterestConfigs[].boardName` */
@@ -2309,7 +2335,7 @@ export interface components {
             platformAspectRatios?: components["schemas"]["PlatformAspectRatio"][];
             /** @description Public HTTPS URLs of media to attach. Use POST /upload-urls to upload files first. A `DOCUMENT` post takes exactly one PDF, PPT, PPTX, DOC or DOCX URL, and a document file is only accepted on a `DOCUMENT` post. One uploaded URL may be reused across any number of posts; the file is kept until the last post referencing it has published. After publishing, the post's `mediaUrls` may hold expiring platform CDN links, so reuse the `publicUrl` you uploaded, not a URL read back from a published post */
             mediaUrls?: string[];
-            /** @description Alt text for each image, in the same order as mediaUrls (max 1000 characters each, empty string to skip one). Sent to X, Bluesky, Mastodon, Tumblr, WordPress, LinkedIn, Facebook, Instagram, Threads and Pinterest (first image only, max 500 characters). TikTok, YouTube and Google Business Profile have no alt text field */
+            /** @description Alt text for each image, in the same order as mediaUrls (max 1000 characters each, empty string to skip one). Sent to X, Bluesky, Mastodon, Tumblr, WordPress, LinkedIn, Facebook, Instagram, Threads and Pinterest (first item only, on image, carousel and video Pins, max 500 characters). TikTok, YouTube and Google Business Profile have no alt text field */
             mediaAltTexts?: string[];
             /** @description Video thumbnail as an https URL or an image data URI, used on every platform that takes one unless `platformThumbnails` overrides it */
             thumbnailUrl?: string;
@@ -2601,7 +2627,7 @@ export interface components {
             platformAspectRatios?: components["schemas"]["PlatformAspectRatio"][];
             /** @description Public HTTPS URLs of media to attach. Use POST /upload-urls to upload files first. A `DOCUMENT` post takes exactly one PDF, PPT, PPTX, DOC or DOCX URL, and a document file is only accepted on a `DOCUMENT` post. One uploaded URL may be reused across any number of posts; the file is kept until the last post referencing it has published. After publishing, the post's `mediaUrls` may hold expiring platform CDN links, so reuse the `publicUrl` you uploaded, not a URL read back from a published post */
             mediaUrls?: string[];
-            /** @description Alt text for each image, in the same order as mediaUrls (max 1000 characters each, empty string to skip one). Sent to X, Bluesky, Mastodon, Tumblr, WordPress, LinkedIn, Facebook, Instagram, Threads and Pinterest (first image only, max 500 characters). TikTok, YouTube and Google Business Profile have no alt text field */
+            /** @description Alt text for each image, in the same order as mediaUrls (max 1000 characters each, empty string to skip one). Sent to X, Bluesky, Mastodon, Tumblr, WordPress, LinkedIn, Facebook, Instagram, Threads and Pinterest (first item only, on image, carousel and video Pins, max 500 characters). TikTok, YouTube and Google Business Profile have no alt text field */
             mediaAltTexts?: string[];
             /** @description Video thumbnail as an https URL or an image data URI, used on every platform that takes one unless `platformThumbnails` overrides it */
             thumbnailUrl?: string;
@@ -2674,7 +2700,7 @@ export interface components {
             platformAspectRatios?: components["schemas"]["PlatformAspectRatio"][];
             /** @description Public HTTPS URLs of media to attach. Use POST /upload-urls to upload files first. A `DOCUMENT` post takes exactly one PDF, PPT, PPTX, DOC or DOCX URL, and a document file is only accepted on a `DOCUMENT` post. One uploaded URL may be reused across any number of posts; the file is kept until the last post referencing it has published. After publishing, the post's `mediaUrls` may hold expiring platform CDN links, so reuse the `publicUrl` you uploaded, not a URL read back from a published post */
             mediaUrls?: string[];
-            /** @description Alt text for each image, in the same order as mediaUrls (max 1000 characters each, empty string to skip one). Sent to X, Bluesky, Mastodon, Tumblr, WordPress, LinkedIn, Facebook, Instagram, Threads and Pinterest (first image only, max 500 characters). TikTok, YouTube and Google Business Profile have no alt text field */
+            /** @description Alt text for each image, in the same order as mediaUrls (max 1000 characters each, empty string to skip one). Sent to X, Bluesky, Mastodon, Tumblr, WordPress, LinkedIn, Facebook, Instagram, Threads and Pinterest (first item only, on image, carousel and video Pins, max 500 characters). TikTok, YouTube and Google Business Profile have no alt text field */
             mediaAltTexts?: string[];
             /** @description Video thumbnail as an https URL or an image data URI, used on every platform that takes one unless `platformThumbnails` overrides it */
             thumbnailUrl?: string;
@@ -2755,6 +2781,10 @@ export interface components {
             timezone: string;
             /** @description Publish now even when the draft has a planned date. Sending it with `scheduledAt` returns 400 */
             publishNow?: boolean;
+        };
+        SetPostLabelsRequest: {
+            /** @description Label `id`s from GET /labels. They replace every label of the post, and `[]` removes them all. An id that is not a label of the workspace returns 400 */
+            labelIds: string[];
         };
         RetryFailedPlatformsRequest: {
             /** @description PostPlatform ids from GET /social-posts/{id}/results, or platform names such as "BLUESKY" to retry every failed entry of that platform. Omit it, or send an empty array, to retry every failed entry. Unknown values are rejected with 400 */
@@ -2852,10 +2882,13 @@ export interface components {
             /** Format: date-time */
             threadPublishedAt?: string;
             pinterestBoardId?: string;
+            pinterestBoardSectionId?: string;
             pinterestTitle?: string;
             pinterestLink?: string;
             /** @description Set when the Pin carries the AI-modified label; see `PinterestPostConfig.aiGenerated` */
             pinterestAiGenerated?: boolean;
+            /** @description Set when the Pin discloses an AI-generated person; see `PinterestPostConfig.aiGeneratedPerson` */
+            pinterestAiGeneratedPerson?: boolean;
             tiktokTitle?: string;
             tiktokCaption?: string;
             tiktokPrivacyLevel?: string;
@@ -4801,6 +4834,81 @@ export interface operations {
             };
             /** @description The video is already scheduled on YouTube; delete the post and schedule it again */
             409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Rate limit exceeded */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    setPostLabels: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description The workspace to act in, for OAuth sign-ins that reach several workspaces. Take the id from `GET /workspaces`. Without it the call lands in the default workspace. A workspace the caller cannot reach answers 403 with `code: workspace_access_denied`. An API key belongs to one workspace: send its own id or leave the header out */
+                "X-Workspace-Id"?: string;
+            };
+            path: {
+                /** @description Post ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetPostLabelsRequest"];
+            };
+        };
+        responses: {
+            /** @description The post with its new labels */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Post"];
+                };
+            };
+            /** @description An id is not a label of the workspace, or more labels than a post can carry */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Invalid or missing API key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key's role does not hold `posts.draft` */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PermissionDeniedError"];
+                };
+            };
+            /** @description Post not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

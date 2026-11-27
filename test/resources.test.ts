@@ -148,6 +148,19 @@ describe('labels', () => {
     expect(calls[0]?.url.pathname).toBe('/post/api/v1/labels');
   });
 
+  it('replaces the labels of a post in any status', async () => {
+    const { fetch, calls } = fakeFetch(() =>
+      json(200, { id: 'post-1', status: 'COMPLETED', labels: [{ id: 'label-acme', name: 'Acme', color: '#3B82F6' }] }),
+    );
+
+    const post = await client(fetch).posts.setLabels('post-1', { labelIds: ['label-acme'] });
+
+    expect(post.labels.map((label) => label.id)).toEqual(['label-acme']);
+    expect(calls[0]?.method).toBe('PUT');
+    expect(calls[0]?.url.pathname).toBe('/post/api/v1/social-posts/post-1/labels');
+    expect(calls[0]?.body).toEqual({ labelIds: ['label-acme'] });
+  });
+
   it('filters posts by label', async () => {
     const { fetch, calls } = fakeFetch(() => json(200, { posts: [], total: 0, hasMore: false }));
 
